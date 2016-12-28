@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>gmaes</title>
+  <link rel=stylesheet type="text/css" href="/css/css_style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
+
+</head>
+
+
+<body>
+<script>
+  var peer = new Peer(['<%= my_id %>'], {key: '9zqr9jbhn0mmfgvi', debug: 3});
+
+  peer.on('open', function(id) {
+
+    console.log('My peer ID is: ' + id);
+
+  });
+
+
+  if(<%= host %>)
+  {
+    var dest_peer_id = '<%= destinated_id %>';
+    var conn = peer.connect(dest_peer_id);
+
+    conn.on('data', function(data) {
+      console.log('Received', data);
+    });
+
+    $(document).ready(function(){
+      $("#send_data").click(function () {
+        conn.send(document.getElementById("data").value);
+      });
+    });
+
+    conn = peer.connect(dest_peer_id);
+  }
+
+
+
+
+
+
+    peer.on('connection', function(conn) {
+
+      conn.on('data', function(data) {
+        console.log('Received', data);
+      });
+
+      $("#send_data").click(function () {
+        conn.send(document.getElementById("data").value);
+      });
+
+    });
+
+
+</script>
+
+
+
+
+
+<div class="container">
+
+  <header>
+
+    <div class="header">
+
+    </div>
+
+    <div class="footer">
+      <p class="footstyle">&copy; 2016 All Right Reserved. </p>
+    </div>
+
+  </header>
+
+
+  <div class="sidebody">
+
+    <input id="data" name="data" type="text">
+    <button id="send_data" > Send </button>
+  </div>
+
+
+</div>
+
+
+</body>
+</html>

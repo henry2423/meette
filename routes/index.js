@@ -16,12 +16,42 @@ router.post('/register', function (req, res){
     new Talkdata({
       id: req.body.id,
       name: req.body.name,
-      Hobby: req.body.Hobby
-    }).save( function(err){
+      hobby: req.body.hobby,
+      gender: req.body.gender,
+      sexual: req.body.sexual,
+      on_connect: req.body.on_connect
+    }).save( function(err, talkdata, count){
       //res.redirect( '/' );
       res.writeHead(200, 'success', {'Content-Type': 'text/html'});
-      res.end(req.body.id);
+      res.write(talkdata._id.toString());
+      res.end();
+
     });
+
+});
+
+
+router.post('/games', function (req, res){
+
+  /*
+  console.log('Granted access');
+  res.send({redirect: '/games'});
+
+
+  res.writeHead(200, 'success', {'Content-Type': 'text/html'});
+  res.send({redirect: '/games'});
+  console.log("seuccess");
+
+   var ids = {
+   my_id: req.body.my_id,
+   destinated_id: req.body.destinated_id
+   };
+   res.write(ids);
+
+  res.end();
+   */
+  console.log(req.body);
+  res.render('games.ejs',{my_id: req.body.my_id, destinated_id: req.body.destinated_id, host: req.body.host});
 
 });
 

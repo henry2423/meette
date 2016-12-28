@@ -28,10 +28,13 @@
         data: {
           id: id,
           name: 'test',
-          Hobby: 'test'
+          hobby: 'test',
+          gender: 'test',
+          sexual: 'test',
+          on_connect: true
         },
         success: function(msg) {
-          alert('Data Saved: ' + msg);
+          //alert('Data Saved: ' + msg);
         },
         error:function(xhr, ajaxOptions, thrownError){
           alert(xhr.status);
@@ -46,6 +49,28 @@
     var dest_peer_id = document.getElementById("peer_id").value;
     var conn = peer.connect(dest_peer_id);
 
+    /*
+    $.ajax({
+      type: 'POST',
+      url: '/games',
+      data: {
+        my_id: peer.id,
+        destinated_id: dest_peer_id
+      },
+      success: function(data, textStatus, jqXHR) {
+        window.location = data.redirect;
+      },
+      error:function(xhr, ajaxOptions, thrownError){
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
+  */
+
+    document.getElementById("my_id").value = peer.id;
+    document.getElementById("destinated_id").value = dest_peer_id;
+    document.getElementById("host").value = true;
+    $("#connect_form").submit();
 
     conn.on('data', function(data) {
       console.log('Received', data);
@@ -59,6 +84,7 @@
 
 
   peer.on('connection', function(conn) {
+
 
     conn.on('data', function(data) {
       console.log('Received', data);
@@ -88,11 +114,21 @@
 
 
 		<div class="sidebody">
+
+      <form id = "connect_form" action="/games" method="POST">
+        <input type="hidden" id="my_id" name="my_id" value=" " />
+        <input type="hidden" id="destinated_id" name="destinated_id" value=" " />
+        <input type="hidden" id="host" name="host" value=" " />
+      </form>
+
+
       <input id="peer_id" name="peer_id" type="text">
       <button onclick="formSubmit() "> Submit </button>
 
+
       <input id="data" name="data" type="text">
       <button id="send_data" > Send </button>
+
 		</div>
 
 

@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var mongoose = require( './db' );  //mongodb setup
 
 var routes = require('./routes/index');
-//var users = require('./routes/user');
+var games = require('./routes/games');
 
 
 var app = express();
@@ -33,7 +33,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/index', routes);
-app.use('/register', routes);
+//app.use('/register', routes);
+app.use('/games', games);
 //app.use('/users', users);
 
 

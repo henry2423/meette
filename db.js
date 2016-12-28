@@ -8,7 +8,10 @@ var Schema = mongoose.Schema;
 var Talkdata = new Schema ({
   id: String,
   name: String,
-  Hobby: String,
+  hobby: String,
+  gender: String,
+  sexual: String,
+  on_connect: Boolean
 });
 
 mongoose.model( 'Talkdata', Talkdata );
