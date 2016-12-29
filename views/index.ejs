@@ -42,11 +42,16 @@
         msgs = msg;
       },
       error:function(xhr, ajaxOptions, thrownError){
+<<<<<<< HEAD
         alert("search "+xhr.status);
         alert("search "+thrownError);
       },
       complete: function () {
         get_result_from_pair(msgs);
+=======
+        alert(xhr.status);
+        alert(thrownError);
+>>>>>>> parent of 885af82... fix the async problem
       }
     });
 
@@ -75,7 +80,9 @@
           on_connect: true,
           game_mode: game_menu
         }, success: function(msg) {
+          //alert('Data Saved: ' + msg);
           console.log(msg);
+<<<<<<< HEAD
           //alert("unique_id "+msg);
           db_unique_id = msg;
 
@@ -91,8 +98,22 @@
           document.getElementById("destinated_id").value = dest_peer_id;
           document.getElementById("host").value = true;
           $("#connect_form").submit();
+=======
+          alert("unique_id "+msg);
+          db_unique_id = msg;
+        },
+        error:function(xhr, ajaxOptions, thrownError){
+          alert(xhr.status);
+          alert(thrownError);
+>>>>>>> parent of 885af82... fix the async problem
         }
       });
+
+      //post to games page and redirect
+      document.getElementById("my_id").value = peer.id;
+      document.getElementById("destinated_id").value = dest_peer_id;
+      document.getElementById("host").value = true;
+      $("#connect_form").submit();
 
     }
     else
@@ -117,8 +138,8 @@
           db_unique_id = msg;
         },
         error:function(xhr, ajaxOptions, thrownError){
-          alert("register2 "+xhr.status);
-          alert("register2 "+thrownError);
+          alert(xhr.status);
+          alert(thrownError);
         }
       });
     }
@@ -190,18 +211,21 @@
         _id: db_unique_id,
         on_connect: true,
         game_mode: game_menu
-      }, success: function(msg) {
+      },
+      success: function(msg) {
         console.log("update "+msg);
 
-      }, error:function(xhr, ajaxOptions, thrownError){
-        alert("update "+xhr.status);
-        alert("update "+thrownError);
-      }, complete: function () {
+
         //post to games page and redirect and hold to be connect at games page
         document.getElementById("my_id").value = peer.id;
         document.getElementById("destinated_id").value = "-1";
         document.getElementById("host").value = false;
         $("#connect_form").submit();
+
+      },
+      error:function(xhr, ajaxOptions, thrownError){
+        alert(xhr.status);
+        alert(thrownError);
       }
     });
 

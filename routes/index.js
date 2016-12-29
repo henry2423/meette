@@ -24,7 +24,6 @@ router.post('/register', function (req, res){
       game_mode: req.body.game_mode
     }).save( function(err, talkdata, count){
       //res.redirect( '/' );
-      console.log("register_ser "+ talkdata);
       res.writeHead(200, 'success', {'Content-Type': 'text/html'});
       res.write(talkdata._id.toString());
       res.end();
