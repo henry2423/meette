@@ -20,6 +20,7 @@
 
     console.log('My peer ID is: ' + id);
 
+
   });
 
 
@@ -42,21 +43,19 @@
   }
 
 
+  peer.on('connection', function(conn) {
 
-
-
-
-    peer.on('connection', function(conn) {
-
-      conn.on('data', function(data) {
-        console.log('Received', data);
-      });
-
-      $("#send_data").click(function () {
-        conn.send(document.getElementById("data").value);
-      });
-
+    conn.on('data', function(data) {
+      console.log('Received', data);
     });
+
+    $("#send_data").click(function () {
+      conn.send(document.getElementById("data").value);
+    });
+
+  });
+
+
 
 
 </script>

@@ -83,12 +83,30 @@ router.post('/update', function (req, res) {
       res.end();
     });
 
+  });
+
+});
+
+
+router.post('/delete', function (req, res) {
+
+  Talkdata.findById(req.body._id, function (err, talkdata) {
+
+    console.log(talkdata);
+
+    talkdata.remove( function ( err, talkdata) {
+      res.writeHead(200, 'success', {'Content-Type': 'text/html'});
+      res.write("delet success");
+      res.end();
+    });
+
 
 
   });
 
 
 });
+
 
 router.post('/games', function (req, res){
 

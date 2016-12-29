@@ -18,7 +18,7 @@
   var peer = new Peer({key: '9zqr9jbhn0mmfgvi' , debug: 3});
   //choose game
   var game_menu;
-  var db_unique_id;
+  var db_unique_id = " ";
 
   peer.on('open', function(id) {
       console.log('My peer ID is: ' + id);
@@ -27,6 +27,7 @@
 
   function pair(game_menu) {
 
+    var msgs;
     //find someone to pair
     $.ajax({
       type: 'POST',
@@ -38,11 +39,14 @@
         game_mode: game_menu
       },
       success: function (msg) {
-        get_result_from_pair(msg);
+        msgs = msg;
       },
       error:function(xhr, ajaxOptions, thrownError){
         alert("search "+xhr.status);
         alert("search "+thrownError);
+      },
+      complete: function () {
+        get_result_from_pair(msgs);
       }
     });
 
@@ -50,13 +54,12 @@
 
   function get_result_from_pair(msg){
     //if pair redirect to games otherwise wait in the database
-
     var dest_peer_id = msg;
+    console.log(dest_peer_id);
 
     if(dest_peer_id != "-1")
     {
-      //this connect is for notify dest_peer to redirect to game page
-      var conn = peer.connect(dest_peer_id);
+
 
       //create host itself to database w/ on_connect: true
       $.ajax({
@@ -74,12 +77,15 @@
         }, success: function(msg) {
           console.log(msg);
           //alert("unique_id "+msg);
-          //db_unique_id = msg;
+          db_unique_id = msg;
 
         }, error:function(xhr, ajaxOptions, thrownError){
           alert("register1 "+xhr.status);
           alert("register1 "+thrownError);
         }, complete: function (jqXHR, textStatus) {
+          //this connect is for notify dest_peer to redirect to game page
+          var conn = peer.connect(dest_peer_id);
+
           //post to games page and redirect
           document.getElementById("my_id").value = peer.id;
           document.getElementById("destinated_id").value = dest_peer_id;
@@ -118,24 +124,59 @@
     }
   }
 
+  $(document).ready(function(){
+    $("#submit_user").off().click(function () {
 
 
-  function submit() {
+      //update UI function future
+      $("#submit_user").hide();
 
-    //update UI function future
-    $("#submit_user").hide();
 
-    //choose game
-    game_menu = 0;
+      console.log("press");
+      //choose game
+      game_menu = 0;
 
-   $("#games_choose").click( function () {
-
+     $("#games_choose").off().click( function () {
        pair(game_menu);
        $("#games_choose").hide();
+       $("#cancel_wait").show();
+     });
 
-   });
 
-  }
+    });
+
+
+  //cancel the pairing process
+
+    $("#cancel_wait").off().click(function(){
+      //update UI
+      $("#submit_user").show();
+      $("#games_choose").show();
+      $("#cancel_wait").hide();
+
+      //ajax delete the user data if exist
+      if(db_unique_id != " ")
+      {
+        $.ajax({
+          type: 'POST',
+          url: '/delete',
+          data: {
+            _id: db_unique_id,
+          }, success: function(msg) {
+            console.log("delete "+msg);
+
+          }, error:function(xhr, ajaxOptions, thrownError){
+            alert("update "+xhr.status);
+            alert("update "+thrownError);
+          }, complete: function () {
+            //go to the user setting view (updateUI)
+            db_unique_id = " ";
+          }
+        });
+      }
+
+    });
+  });
 
 
 
@@ -204,10 +245,12 @@
       <input id="hobby" name="hobby" type="text" value="piano">
       <input id="gender" name="gender" type="text" value="male">
       <input id="sexual" name="sexual" type="text" value="male">
-      <button id="submit_user" name="submit_user" onclick="submit()"> Submit </button><br>
+      <button id="submit_user" name="submit_user" > Submit </button><br>
 
       <!-- //game's menu choose  -->
       <button id="games_choose" name="games_choose"> Pair </button><br>
+
+      <button id="cancel_wait" name="cancel_wait"> Cancel the Pairing </button><br>
 
       <input id="data" name="data" type="text">
       <button id="send_data" > Send </button>
