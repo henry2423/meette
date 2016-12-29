@@ -7,7 +7,31 @@ var Talkdata = mongoose.model( 'Talkdata' );
 /* GET home page. */
 
 router.get('/', function(req, res) {
-  res.render('index.ejs',{title: 'meette'});
+  res.render('index.ejs',{title: 'meette', name: 'henry', age: '19', hobbies: 'paino', gender: 'male', sexual: 'male'});
+});
+
+router.post('/', function (req, res){
+
+  /*
+   console.log('Granted access');
+   res.send({redirect: '/games'});
+
+
+   res.writeHead(200, 'success', {'Content-Type': 'text/html'});
+   res.send({redirect: '/games'});
+   console.log("seuccess");
+
+   var ids = {
+   my_id: req.body.my_id,
+   destinated_id: req.body.destinated_id
+   };
+   res.write(ids);
+
+   res.end();
+   */
+
+  res.render('index.ejs',{title: 'meette', name: req.body.name, age: req.body.age, hobbies: req.body.hobbies, gender: req.body.gender, sexual: req.body.sexual});
+
 });
 
 
@@ -34,11 +58,12 @@ router.post('/register', function (req, res){
 
 router.post('/search', function (req, res){
 
+    console.log("search age "+ "parseInt(req.body.age)-3");
     Talkdata.
     find({
       "gender": req.body.gender,
       "sexual": req.body.sexual,
-      //"age": { $gt: parseInt(req.body.age)-3, $lt: parseInt(req.body.age)+5 },
+      "age": { $gt: parseInt(req.body.age)-3, $lt: parseInt(req.body.age)-3 },
       "on_connect": false,
       "game_mode": req.body.game_mode
     }).

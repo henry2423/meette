@@ -15,6 +15,7 @@
 <body>
 <script>
   var peer = new Peer(['<%= my_id %>'], {key: '9zqr9jbhn0mmfgvi', debug: 3});
+  var dest_peer_id = '<%= destinated_id %>';
 
   peer.on('open', function(id) {
 
@@ -25,7 +26,6 @@
 
   if(<%= host %>)
   {
-    var dest_peer_id = '<%= destinated_id %>';
     var conn = peer.connect(dest_peer_id);
 
     conn.on('data', function(data) {
@@ -38,27 +38,125 @@
       });
     });
 
+
+    //check if the destinate peer close the session
+    setTimeout(function () {
+      setInterval(function () {
+        if(conn.open == false)
+        {
+          peer.destroy();
+        }
+      },3000);
+    },5000);
+
   }
-
-
-
-
 
 
   peer.on('connection', function(conn) {
 
+    dest_peer_id = conn.peer;
+
     conn.on('data', function(data) {
-      console.log('Received', data);
+        console.log('Received', data);
     });
 
     $("#send_data").off().click(function () {
       conn.send(document.getElementById("data").value);
     });
 
+    //check if the destinate peer close the session
+    setTimeout(function () {
+      setInterval(function () {
+        if(conn.open == false)
+        {
+          peer.destroy();
+        }
+      },3000);
+    },5000);
+
+  });
+
+  peer.on('close', function() {
+      //alert("close");
+      //because this case user is forced to close session, so post user data to /index and delete user data from db
+      alert("對方已離線");
+
+      $.ajax({
+        type: 'POST',
+        url: '/games/clear',
+        data: {
+          my_peer_id: '<%= my_id %>',
+          destinated_peer_id: dest_peer_id
+        },
+        success: function (msg) {
+          //post to games page and redirect and hold to be connect at games page
+          console.log("clear back msg " + msg);
+          document.getElementById("name").value = msg.name;
+          document.getElementById("age").value = msg.age;
+          document.getElementById("hobbies").value = msg.hobbies;
+          document.getElementById("gender").value = msg.gender;
+          document.getElementById("sexual").value = msg.sexual;
+          $("#move_back_form").submit();
+        },
+        error:function(xhr, ajaxOptions, thrownError){
+          alert("clear "+xhr.status);
+          alert("clear "+thrownError);
+        }
+      });
+
+
+  });
+
+  peer.on('error', function(err) {
+    alert("error");
+
   });
 
 
+
+  $(document).ready(function () {
+    //if the someone cancel the session
+    var cancel_peer_id;
+
+    $("#leave_room").off().click(function(){
+      //update UI
+
+      //ajax delete the user data if exist
+        $.ajax({
+          type: 'POST',
+          url: '/games/search',
+          data: {
+            my_peer_id: peer.id
+          }, success: function(msg) {
+            //post to games page and redirect and hold to be connect at games page
+            console.log("search back msg " + msg);
+            document.getElementById("name").value = msg.name;
+            document.getElementById("age").value = msg.age;
+            document.getElementById("hobbies").value = msg.hobbies;
+            document.getElementById("gender").value = msg.gender;
+            document.getElementById("sexual").value = msg.sexual;
+            $("#move_back_form").submit();
+          }, error:function(xhr, ajaxOptions, thrownError){
+            alert("search "+xhr.status);
+            alert("search "+thrownError);
+          }
+        });
+
+    });
+  });
+
+
+
 </script>
+
+<!-- the form is for send data to games page -->
+<form id = "move_back_form" action='/' method="POST">
+  <input type="hidden" id="name" name="name" type="text" value=" ">
+  <input type="hidden" id="age" name="age" type="text" value=" ">
+  <input type="hidden" id="hobbies" name="hobbies" type="text" value=" ">
+  <input type="hidden" id="gender" name="gender" type="text" value=" ">
+  <input type="hidden" id="sexual" name="sexual" type="text" value=" ">
+</form>
 
 
 
@@ -82,7 +180,10 @@
   <div class="sidebody">
 
     <input id="data" name="data" type="text">
-    <button id="send_data" > Send </button>
+    <button id="send_data" name="send_data"> Send </button>
+
+
+    <button id="leave_room" name="leave_room"> Close </button>
   </div>
 
 

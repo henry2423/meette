@@ -66,7 +66,7 @@
           peer_id: peer.id,
           name: document.getElementById("name").value,
           age: document.getElementById("age").value,
-          hobbies: document.getElementById("hobby").value,
+          hobbies: document.getElementById("hobbies").value,
           gender: document.getElementById("gender").value,
           sexual: document.getElementById("sexual").value,
           on_connect: true,
@@ -99,7 +99,7 @@
           peer_id: peer.id,
           name: document.getElementById("name").value,
           age: document.getElementById("age").value,
-          hobbies: document.getElementById("hobby").value,
+          hobbies: document.getElementById("hobbies").value,
           gender: document.getElementById("gender").value,
           sexual: document.getElementById("sexual").value,
           on_connect: false,
@@ -177,6 +177,7 @@
 
 
   peer.on('connection', function(conn) {
+    var destinated_id = " ";
 
     //ajax update the on_connect status to true
     $.ajax({
@@ -192,7 +193,7 @@
 
     //post to games page and redirect and hold to be connect at games page
     document.getElementById("my_id").value = peer.id;
-    document.getElementById("destinated_id").value = "-1";
+    document.getElementById("destinated_id").value = destinated_id;
     document.getElementById("host").value = false;
     $("#connect_form").submit();
 
@@ -228,11 +229,11 @@
 
 
     <!-- //user's data setting -->
-    <input id="name" name="name" type="text" value="a">
-    <input id="age" name="age" type="text" value="18">
-    <input id="hobby" name="hobby" type="text" value="piano">
-    <input id="gender" name="gender" type="text" value="male">
-    <input id="sexual" name="sexual" type="text" value="male">
+    <input id="name" name="name" type="text" value='<%= name %>'>
+    <input id="age" name="age" type="text" value='<%= age %>'>
+    <input id="hobbies" name="hobbies" type="text" value='<%= hobbies %>'>
+    <input id="gender" name="gender" type="text" value='<%= gender %>'>
+    <input id="sexual" name="sexual" type="text" value='<%= sexual %>'>
     <button id="submit_user" name="submit_user" onclick="submit()" > Submit </button><br>
 
     <!-- //game's menu choose  -->
