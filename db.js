@@ -6,12 +6,14 @@ mongoose.connect('mongodb://henry1203:henry57383@ds021346.mlab.com:21346/talkerd
 var Schema = mongoose.Schema;
 
 var Talkdata = new Schema ({
-  id: String,
+  peer_id: String,
   name: String,
-  hobby: String,
+  age: Number,
+  hobbies: String,
   gender: String,
   sexual: String,
-  on_connect: Boolean
+  on_connect: Boolean,
+  game_mode: Number
 });
 
 mongoose.model( 'Talkdata', Talkdata );

@@ -16,25 +16,66 @@
 
 <script>
   var peer = new Peer({key: '9zqr9jbhn0mmfgvi' , debug: 3});
-
+  //choose game
+  var game_menu;
+  var db_unique_id;
 
   peer.on('open', function(id) {
-
       console.log('My peer ID is: ' + id);
+  });
 
+
+  function pair(game_menu) {
+
+    //find someone to pair
+    $.ajax({
+      type: 'POST',
+      url: '/search',
+      data: {
+        age: document.getElementById("age").value,
+        gender: document.getElementById("sexual").value,
+        sexual: document.getElementById("gender").value,
+        game_mode: game_menu
+      },
+      success: function (msg) {
+        get_result_from_pair(msg);
+      },
+      error:function(xhr, ajaxOptions, thrownError){
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
+
+  }
+
+  function get_result_from_pair(msg){
+    //if pair redirect to games otherwise wait in the database
+
+    var dest_peer_id = msg;
+
+    if(dest_peer_id != "-1")
+    {
+      //this connect is for notify dest_peer to redirect to game page
+      var conn = peer.connect(dest_peer_id);
+
+      //create host itself to database w/ on_connect: true
       $.ajax({
         type: 'POST',
         url: '/register',
         data: {
-          id: id,
-          name: 'test',
-          hobby: 'test',
-          gender: 'test',
-          sexual: 'test',
-          on_connect: true
-        },
-        success: function(msg) {
+          peer_id: peer.id,
+          name: document.getElementById("name").value,
+          age: document.getElementById("age").value,
+          hobbies: document.getElementById("hobby").value,
+          gender: document.getElementById("gender").value,
+          sexual: document.getElementById("sexual").value,
+          on_connect: true,
+          game_mode: game_menu
+        }, success: function(msg) {
           //alert('Data Saved: ' + msg);
+          console.log(msg);
+          alert("unique_id "+msg);
+          db_unique_id = msg;
         },
         error:function(xhr, ajaxOptions, thrownError){
           alert(xhr.status);
@@ -42,57 +83,93 @@
         }
       });
 
-  });
+      //post to games page and redirect
+      document.getElementById("my_id").value = peer.id;
+      document.getElementById("destinated_id").value = dest_peer_id;
+      document.getElementById("host").value = true;
+      $("#connect_form").submit();
+
+    }
+    else
+    {
+      //create host itself to database w/ on_connect: false
+      $.ajax({
+        type: 'POST',
+        url: '/register',
+        data: {
+          peer_id: peer.id,
+          name: document.getElementById("name").value,
+          age: document.getElementById("age").value,
+          hobbies: document.getElementById("hobby").value,
+          gender: document.getElementById("gender").value,
+          sexual: document.getElementById("sexual").value,
+          on_connect: false,
+          game_mode: game_menu
+        },
+        success: function(msg) {
+          //alert('Data Saved: ' + msg);
+          console.log("unique_id "+msg);
+          db_unique_id = msg;
+        },
+        error:function(xhr, ajaxOptions, thrownError){
+          alert(xhr.status);
+          alert(thrownError);
+        }
+      });
+    }
+  }
 
 
-  function formSubmit() {
-    var dest_peer_id = document.getElementById("peer_id").value;
-    var conn = peer.connect(dest_peer_id);
 
-    /*
+  function submit() {
+
+    //update UI function future
+    $("#submit_user").hide();
+
+    //choose game
+    game_menu = 0;
+
+   $("#games_choose").click( function () {
+
+       pair(game_menu);
+       $("#games_choose").hide();
+
+   });
+
+  }
+
+
+
+  peer.on('connection', function(conn) {
+
+    //ajax update the on_connect status to true
     $.ajax({
       type: 'POST',
-      url: '/games',
+      url: '/update',
       data: {
-        my_id: peer.id,
-        destinated_id: dest_peer_id
+        _id: db_unique_id,
+        on_connect: true,
+        game_mode: game_menu
       },
-      success: function(data, textStatus, jqXHR) {
-        window.location = data.redirect;
+      success: function(msg) {
+        console.log("update "+msg);
+
+
+        //post to games page and redirect and hold to be connect at games page
+        document.getElementById("my_id").value = peer.id;
+        document.getElementById("destinated_id").value = "-1";
+        document.getElementById("host").value = false;
+        $("#connect_form").submit();
+
       },
       error:function(xhr, ajaxOptions, thrownError){
         alert(xhr.status);
         alert(thrownError);
       }
     });
-  */
-
-    document.getElementById("my_id").value = peer.id;
-    document.getElementById("destinated_id").value = dest_peer_id;
-    document.getElementById("host").value = true;
-    $("#connect_form").submit();
-
-    conn.on('data', function(data) {
-      console.log('Received', data);
-    });
-
-    $("#send_data").click(function () {
-        conn.send(document.getElementById("data").value);
-    });
-
-  }
 
 
-  peer.on('connection', function(conn) {
 
-
-    conn.on('data', function(data) {
-      console.log('Received', data);
-    });
-
-    $("#send_data").click(function () {
-      conn.send(document.getElementById("data").value);
-    });
 
   });
 
@@ -115,6 +192,7 @@
 
 		<div class="sidebody">
 
+      <!-- the form is for send data to games page -->
       <form id = "connect_form" action="/games" method="POST">
         <input type="hidden" id="my_id" name="my_id" value=" " />
         <input type="hidden" id="destinated_id" name="destinated_id" value=" " />
@@ -122,9 +200,18 @@
       </form>
 
 
-      <input id="peer_id" name="peer_id" type="text">
-      <button onclick="formSubmit() "> Submit </button>
 
+
+      <!-- //user's data setting -->
+      <input id="name" name="name" type="text" value="a">
+      <input id="age" name="age" type="text" value="18">
+      <input id="hobby" name="hobby" type="text" value="piano">
+      <input id="gender" name="gender" type="text" value="male">
+      <input id="sexual" name="sexual" type="text" value="male">
+      <button id="submit_user" name="submit_user" onclick="submit()"> Submit </button><br>
+
+      <!-- //game's menu choose  -->
+      <button id="games_choose" name="games_choose"> Pair </button><br>
 
       <input id="data" name="data" type="text">
       <button id="send_data" > Send </button>
