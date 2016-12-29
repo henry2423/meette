@@ -2,6 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="20285be0-2309-48d3-be70-6fb9288c0529" name="Default" comment="">
+<<<<<<< HEAD
+=======
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.js" afterPath="$PROJECT_DIR$/db.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/games.js" afterPath="$PROJECT_DIR$/routes/games.js" />
+>>>>>>> parent of 885af82... fix the async problem
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/index.js" afterPath="$PROJECT_DIR$/routes/index.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/games.ejs" afterPath="$PROJECT_DIR$/views/games.ejs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.ejs" afterPath="$PROJECT_DIR$/views/index.ejs" />
@@ -40,8 +46,13 @@
       <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/index.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="703">
               <caret line="98" column="23" lean-forward="false" selection-start-line="98" selection-start-column="23" selection-end-line="98" selection-end-column="23" />
+=======
+            <state relative-caret-position="76">
+              <caret line="4" column="7" lean-forward="false" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
+>>>>>>> parent of 885af82... fix the async problem
               <folding />
             </state>
           </provider>
@@ -50,8 +61,13 @@
       <file leaf-file-name="index.ejs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/index.ejs">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="608">
               <caret line="170" column="0" lean-forward="false" selection-start-line="170" selection-start-column="0" selection-end-line="170" selection-end-column="0" />
+=======
+            <state relative-caret-position="444">
+              <caret line="161" column="36" lean-forward="false" selection-start-line="161" selection-start-column="36" selection-end-line="161" selection-end-column="36" />
+>>>>>>> parent of 885af82... fix the async problem
               <folding />
             </state>
           </provider>
@@ -103,9 +119,12 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/db.js" />
-        <option value="$PROJECT_DIR$/routes/games.js" />
         <option value="$PROJECT_DIR$/routes/index.js" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/views/games.ejs" />
+=======
+        <option value="$PROJECT_DIR$/routes/games.js" />
+>>>>>>> parent of 885af82... fix the async problem
         <option value="$PROJECT_DIR$/views/index.ejs" />
       </list>
     </option>
@@ -323,12 +342,20 @@
       <workItem from="1482818931742" duration="1268000" />
       <workItem from="1482821119304" duration="13681000" />
       <workItem from="1482866095959" duration="4337000" />
+<<<<<<< HEAD
       <workItem from="1482930786258" duration="29299000" />
+=======
+      <workItem from="1482930786258" duration="22809000" />
+>>>>>>> parent of 885af82... fix the async problem
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="51015000" />
+=======
+    <option name="totallyTimeSpent" value="44525000" />
+>>>>>>> parent of 885af82... fix the async problem
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -625,16 +652,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/games.ejs">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="-579">
           <caret line="36" column="21" lean-forward="true" selection-start-line="36" selection-start-column="21" selection-end-line="36" selection-end-column="21" />
+=======
+        <state relative-caret-position="76">
+          <caret line="4" column="7" lean-forward="false" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
+>>>>>>> parent of 885af82... fix the async problem
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/views/index.ejs">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="608">
           <caret line="170" column="0" lean-forward="false" selection-start-line="170" selection-start-column="0" selection-end-line="170" selection-end-column="0" />
+=======
+        <state relative-caret-position="444">
+          <caret line="161" column="36" lean-forward="false" selection-start-line="161" selection-start-column="36" selection-end-line="161" selection-end-column="36" />
+>>>>>>> parent of 885af82... fix the async problem
           <folding />
         </state>
       </provider>

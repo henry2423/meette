@@ -43,11 +43,16 @@
       },
       error:function(xhr, ajaxOptions, thrownError){
 <<<<<<< HEAD
+<<<<<<< HEAD
         alert("search "+xhr.status);
         alert("search "+thrownError);
       },
       complete: function () {
         get_result_from_pair(msgs);
+=======
+        alert(xhr.status);
+        alert(thrownError);
+>>>>>>> parent of 885af82... fix the async problem
 =======
         alert(xhr.status);
         alert(thrownError);
@@ -83,6 +88,7 @@
           //alert('Data Saved: ' + msg);
           console.log(msg);
 <<<<<<< HEAD
+<<<<<<< HEAD
           //alert("unique_id "+msg);
           db_unique_id = msg;
 
@@ -99,12 +105,17 @@
           document.getElementById("host").value = true;
           $("#connect_form").submit();
 =======
+=======
+>>>>>>> parent of 885af82... fix the async problem
           alert("unique_id "+msg);
           db_unique_id = msg;
         },
         error:function(xhr, ajaxOptions, thrownError){
           alert(xhr.status);
           alert(thrownError);
+<<<<<<< HEAD
+>>>>>>> parent of 885af82... fix the async problem
+=======
 >>>>>>> parent of 885af82... fix the async problem
         }
       });
