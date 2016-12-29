@@ -21,13 +21,12 @@
   var db_unique_id = " ";
 
   peer.on('open', function(id) {
-      console.log('My peer ID is: ' + id);
+    console.log('My peer ID is: ' + id);
   });
 
 
   function pair(game_menu) {
 
-    var msgs;
     //find someone to pair
     $.ajax({
       type: 'POST',
@@ -39,24 +38,11 @@
         game_mode: game_menu
       },
       success: function (msg) {
-        msgs = msg;
+        get_result_from_pair(msg);
       },
       error:function(xhr, ajaxOptions, thrownError){
-<<<<<<< HEAD
-<<<<<<< HEAD
         alert("search "+xhr.status);
         alert("search "+thrownError);
-      },
-      complete: function () {
-        get_result_from_pair(msgs);
-=======
-        alert(xhr.status);
-        alert(thrownError);
->>>>>>> parent of 885af82... fix the async problem
-=======
-        alert(xhr.status);
-        alert(thrownError);
->>>>>>> parent of 885af82... fix the async problem
       }
     });
 
@@ -64,12 +50,13 @@
 
   function get_result_from_pair(msg){
     //if pair redirect to games otherwise wait in the database
+
     var dest_peer_id = msg;
-    console.log(dest_peer_id);
 
     if(dest_peer_id != "-1")
     {
-
+      //this connect is for notify dest_peer to redirect to game page
+      var conn = peer.connect(dest_peer_id);
 
       //create host itself to database w/ on_connect: true
       $.ajax({
@@ -85,10 +72,7 @@
           on_connect: true,
           game_mode: game_menu
         }, success: function(msg) {
-          //alert('Data Saved: ' + msg);
           console.log(msg);
-<<<<<<< HEAD
-<<<<<<< HEAD
           //alert("unique_id "+msg);
           db_unique_id = msg;
 
@@ -96,35 +80,13 @@
           alert("register1 "+xhr.status);
           alert("register1 "+thrownError);
         }, complete: function (jqXHR, textStatus) {
-          //this connect is for notify dest_peer to redirect to game page
-          var conn = peer.connect(dest_peer_id);
-
           //post to games page and redirect
           document.getElementById("my_id").value = peer.id;
           document.getElementById("destinated_id").value = dest_peer_id;
           document.getElementById("host").value = true;
           $("#connect_form").submit();
-=======
-=======
->>>>>>> parent of 885af82... fix the async problem
-          alert("unique_id "+msg);
-          db_unique_id = msg;
-        },
-        error:function(xhr, ajaxOptions, thrownError){
-          alert(xhr.status);
-          alert(thrownError);
-<<<<<<< HEAD
->>>>>>> parent of 885af82... fix the async problem
-=======
->>>>>>> parent of 885af82... fix the async problem
         }
       });
-
-      //post to games page and redirect
-      document.getElementById("my_id").value = peer.id;
-      document.getElementById("destinated_id").value = dest_peer_id;
-      document.getElementById("host").value = true;
-      $("#connect_form").submit();
 
     }
     else
@@ -149,36 +111,37 @@
           db_unique_id = msg;
         },
         error:function(xhr, ajaxOptions, thrownError){
-          alert(xhr.status);
-          alert(thrownError);
+          alert("register2 "+xhr.status);
+          alert("register2 "+thrownError);
         }
       });
     }
   }
 
-  $(document).ready(function(){
-    $("#submit_user").off().click(function () {
 
 
-      //update UI function future
-      $("#submit_user").hide();
+  function submit() {
+
+    //update UI function future
+    $("#submit_user").hide();
 
 
-      console.log("press");
-      //choose game
-      game_menu = 0;
+    //choose game
+    game_menu = 0;
 
-     $("#games_choose").off().click( function () {
-       pair(game_menu);
-       $("#games_choose").hide();
-       $("#cancel_wait").show();
-     });
+    $("#games_choose").off().click( function () {
 
-
+      pair(game_menu);
+      $("#games_choose").hide();
+      $("#cancel_wait").show();
     });
 
+  }
 
-  //cancel the pairing process
+
+
+  $(document).ready(function () {
+    //cancel the pairing process
 
     $("#cancel_wait").off().click(function(){
       //update UI
@@ -212,6 +175,7 @@
 
 
 
+
   peer.on('connection', function(conn) {
 
     //ajax update the on_connect status to true
@@ -222,78 +186,67 @@
         _id: db_unique_id,
         on_connect: true,
         game_mode: game_menu
-      },
-      success: function(msg) {
-        console.log("update "+msg);
-
-
-        //post to games page and redirect and hold to be connect at games page
-        document.getElementById("my_id").value = peer.id;
-        document.getElementById("destinated_id").value = "-1";
-        document.getElementById("host").value = false;
-        $("#connect_form").submit();
-
-      },
-      error:function(xhr, ajaxOptions, thrownError){
-        alert(xhr.status);
-        alert(thrownError);
       }
     });
 
 
-
+    //post to games page and redirect and hold to be connect at games page
+    document.getElementById("my_id").value = peer.id;
+    document.getElementById("destinated_id").value = "-1";
+    document.getElementById("host").value = false;
+    $("#connect_form").submit();
 
   });
 
 </script>
 
-	<div class="container">
+<div class="container">
 
-		<header>
+  <header>
 
-			<div class="header">
+    <div class="header">
 
-			</div>
+    </div>
 
-			<div class="footer">
-				<p class="footstyle">&copy; 2016 All Right Reserved. </p>
-			</div>
+    <div class="footer">
+      <p class="footstyle">&copy; 2016 All Right Reserved. </p>
+    </div>
 
-		</header>
-
-
-		<div class="sidebody">
-
-      <!-- the form is for send data to games page -->
-      <form id = "connect_form" action="/games" method="POST">
-        <input type="hidden" id="my_id" name="my_id" value=" " />
-        <input type="hidden" id="destinated_id" name="destinated_id" value=" " />
-        <input type="hidden" id="host" name="host" value=" " />
-      </form>
+  </header>
 
 
+  <div class="sidebody">
+
+    <!-- the form is for send data to games page -->
+    <form id = "connect_form" action="/games" method="POST">
+      <input type="hidden" id="my_id" name="my_id" value=" " />
+      <input type="hidden" id="destinated_id" name="destinated_id" value=" " />
+      <input type="hidden" id="host" name="host" value=" " />
+    </form>
 
 
-      <!-- //user's data setting -->
-      <input id="name" name="name" type="text" value="a">
-      <input id="age" name="age" type="text" value="18">
-      <input id="hobby" name="hobby" type="text" value="piano">
-      <input id="gender" name="gender" type="text" value="male">
-      <input id="sexual" name="sexual" type="text" value="male">
-      <button id="submit_user" name="submit_user" > Submit </button><br>
-
-      <!-- //game's menu choose  -->
-      <button id="games_choose" name="games_choose"> Pair </button><br>
-
-      <button id="cancel_wait" name="cancel_wait"> Cancel the Pairing </button><br>
-
-      <input id="data" name="data" type="text">
-      <button id="send_data" > Send </button>
-
-		</div>
 
 
-	</div>
+    <!-- //user's data setting -->
+    <input id="name" name="name" type="text" value="a">
+    <input id="age" name="age" type="text" value="18">
+    <input id="hobby" name="hobby" type="text" value="piano">
+    <input id="gender" name="gender" type="text" value="male">
+    <input id="sexual" name="sexual" type="text" value="male">
+    <button id="submit_user" name="submit_user" onclick="submit()" > Submit </button><br>
+
+    <!-- //game's menu choose  -->
+    <button id="games_choose" name="games_choose"> Pair </button><br>
+
+    <button id="cancel_wait" name="cancel_wait"> Cancel the Pairing </button><br>
+
+    <input id="data" name="data" type="text">
+    <button id="send_data" > Send </button>
+
+  </div>
+
+
+</div>
 
 
 </body>

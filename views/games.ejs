@@ -20,7 +20,6 @@
 
     console.log('My peer ID is: ' + id);
 
-
   });
 
 
@@ -34,13 +33,16 @@
     });
 
     $(document).ready(function(){
-      $("#send_data").click(function () {
+      $("#send_data").off().click(function () {
         conn.send(document.getElementById("data").value);
       });
     });
 
-    conn = peer.connect(dest_peer_id);
   }
+
+
+
+
 
 
   peer.on('connection', function(conn) {
@@ -49,13 +51,11 @@
       console.log('Received', data);
     });
 
-    $("#send_data").click(function () {
+    $("#send_data").off().click(function () {
       conn.send(document.getElementById("data").value);
     });
 
   });
-
-
 
 
 </script>
