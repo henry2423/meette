@@ -63,7 +63,7 @@ router.post('/search', function (req, res){
     find({
       "gender": req.body.gender,
       "sexual": req.body.sexual,
-      "age": { $gt: parseInt(req.body.age)-3, $lt: parseInt(req.body.age)-3 },
+      "age": { $gt: parseInt(req.body.age)-3, $lt: parseInt(req.body.age)+3 },
       "on_connect": false,
       "game_mode": req.body.game_mode
     }).

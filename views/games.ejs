@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <title>gmaes</title>
+  <title>Space</title>
   <link rel=stylesheet type="text/css" href="/css/css_style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
@@ -149,6 +149,97 @@
 
 </script>
 
+
+
+<script>
+
+
+  peer.on('call', function(incoming) {
+
+    //fetching call
+    navigator.getUserMedia =  navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia;
+
+
+      navigator.getUserMedia({
+          audio: true, video: false
+      }, function(stream) {
+        //replay local audio stream to destinate
+        // Answer the call, providing our mediaStream
+        incoming.answer(stream);
+      }, function(error){
+        console.log(error);
+        alert('An error occured. Please try again');
+      });
+
+
+    incoming.on('stream', function(stream){
+
+      //get call setting
+      var audio = document.getElementById('peer_call');
+      var audio_url = window.URL || window.webKitURL || window.mozURL;
+
+      audio.src = audio_url.createObjectURL(stream);
+      audio.play();
+
+    });
+
+  });
+
+
+
+
+
+  $(document).ready(function () {
+
+    $("#call").off().click(function(){
+
+
+
+      //fetching call
+      navigator.getUserMedia =  navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia;
+
+
+      navigator.getUserMedia({
+        audio: true, video: false
+      }, function(stream) {
+        //replay local audio stream to destinate
+        // Answer the call, providing our mediaStream
+        var call = peer.call(dest_peer_id, stream);
+
+        call.on('stream', function(stream) {
+          // `stream` is the MediaStream of the remote peer.
+
+          //get call setting
+          var audio = document.getElementById('peer_call');
+          var audio_url = window.URL || window.webKitURL || window.mozURL;
+
+          audio.src = audio_url.createObjectURL(stream);
+          audio.play();
+        });
+      }, function(error){
+        console.log(error);
+        alert('An error occured. Please try again');
+      });
+
+
+
+
+
+
+    });
+
+  });
+
+
+
+</script>
+
 <!-- the form is for send data to games page -->
 <form id = "move_back_form" action='/' method="POST">
   <input type="hidden" id="name" name="name" type="text" value=" ">
@@ -180,7 +271,10 @@
   <div class="sidebody">
 
     <input id="data" name="data" type="text">
-    <button id="send_data" name="send_data"> Send </button>
+    <button id="send_data" name="send_data"> Send </button> <br>
+
+    <audio id="peer_call" name="peer_call" controls=" "> </audio>
+    <button id="call" name="call"> Call </button>
 
 
     <button id="leave_room" name="leave_room"> Close </button>
