@@ -16,7 +16,7 @@
 
 <script>
 
-  var peer = new Peer(['<%= my_id %>'], {host: 'localhost', port: 9000, path: '/api', debug: 3});
+  var peer = new Peer(['<%= my_id %>'], {host: 'localhost', port: 9000, path: '/api', secure: true, debug: 3});
   //var peer = new Peer(['<%= my_id %>'], {key: '9zqr9jbhn0mmfgvi', debug: 3});
   var dest_peer_id = '<%= destinated_id %>';
 
