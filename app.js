@@ -14,7 +14,7 @@ var games = require('./routes/games');
 var app = express();
 
 //peerjs server
-var server = app.listen(9000);
+var server = app.listen(process.env.PORT ||9000);
 var options = {
   debug: true
 }
