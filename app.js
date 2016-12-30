@@ -5,12 +5,22 @@ var logger = require('morgan');
 //var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require( './db' );  //mongodb setup
+var ExpressPeerServer = require('peer').ExpressPeerServer; //local peer.js server
 
 var routes = require('./routes/index');
 var games = require('./routes/games');
 
 
 var app = express();
+
+//peerjs server
+var server = app.listen(9000);
+var options = {
+  debug: true
+}
+
+app.use('/api', ExpressPeerServer(server, options));
+
 
 var env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
