@@ -16,8 +16,8 @@
 
 <script>
 
-  var peer = new Peer(['<%= my_id %>'], {host: 'localhost', port: 80, path: '/api', secure: true, debug: 3});
-  //var peer = new Peer(['<%= my_id %>'], {key: '9zqr9jbhn0mmfgvi', debug: 3});
+  //var peer = new Peer(['<%= my_id %>'], {host: 'peerjserver.herokuapp.com', port: 443, secure: true, debug: 3});
+  var peer = new Peer(['<%= my_id %>'], {key: '9zqr9jbhn0mmfgvi', debug: 3});
   var dest_peer_id = '<%= destinated_id %>';
 
   peer.on('open', function(id) {
@@ -82,7 +82,6 @@
   peer.on('close', function() {
       //alert("close");
       //because this case user is forced to close session, so post user data to /index and delete user data from db
-      alert("對方已離線");
     /*
       $.ajax({
         type: 'POST',
