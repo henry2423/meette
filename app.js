@@ -11,7 +11,6 @@ var ExpressPeerServer = require('peer').ExpressPeerServer; //peer server
 var routes = require('./routes/index');
 var games = require('./routes/games');
 
-
 var app = express();
 
 var peer_server = app.listen(9000, function() {
