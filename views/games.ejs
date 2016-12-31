@@ -17,7 +17,8 @@
 <script>
 
   //var peer = new Peer(['<%= my_id %>'], {host: 'peerjserver.herokuapp.com', port: 443, secure: true, debug: 3});
-  var peer = new Peer(['<%= my_id %>'], {key: '9zqr9jbhn0mmfgvi', debug: 3});
+  //var peer = new Peer(['<%= my_id %>'], {key: '9zqr9jbhn0mmfgvi', debug: 3});
+  var peer = new Peer(['<%= my_id %>'], {host: '/api', port: 9000, secure: true, path: '/api', debug: 3});
   var dest_peer_id = '<%= destinated_id %>';
 
   peer.on('open', function(id) {
