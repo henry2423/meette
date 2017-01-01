@@ -18,7 +18,7 @@
 
   //var peer = new Peer(['<%= my_id %>'], {host: 'peerjserver.herokuapp.com', port: 443, secure: true, debug: 3});
   //var peer = new Peer(['<%= my_id %>'], {key: '9zqr9jbhn0mmfgvi', debug: 3});
-  var peer = new Peer(['<%= my_id %>'], {host: '/', port: 7000, path: '/api',secure: true, debug: 3});
+  var peer = new Peer(['<%= my_id %>'], {host: 'meette.me', port: 7000, path: '/api',secure: true, debug: 3});
   var dest_peer_id = '<%= destinated_id %>';
 
   peer.on('open', function(id) {
@@ -115,7 +115,7 @@
         my_peer_id: '<%= my_id %>',
       },
       success: function (msg) {
-        //post to games page and redirect and hold to be connect at games page
+        //post to index page and redirect and hold to be connect at index page
         console.log("clear back msg " + msg);
         document.getElementById("name").value = msg.name;
         document.getElementById("age").value = msg.age;

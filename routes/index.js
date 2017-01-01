@@ -58,7 +58,7 @@ router.post('/register', function (req, res){
 
 router.post('/search', function (req, res){
 
-    console.log("search age "+ "parseInt(req.body.age)-3");
+    console.log("search age "+ parseInt(req.body.age)-3);
     Talkdata.
     find({
       "gender": req.body.gender,
@@ -125,6 +125,22 @@ router.post('/delete', function (req, res) {
     });
 
 
+
+  });
+
+
+});
+
+router.post('/clear', function (req, res){
+
+  console.log("clear "+ req.body.my_peer_id);
+
+  Talkdata.findOne({"peer_id": req.body.my_peer_id},function (err, talkdata) {
+
+    talkdata.remove(function (err, talkdata) {
+      res.writeHead(200, 'delete', {'Content-Type': 'application/json'});
+      res.end();
+    });
 
   });
 

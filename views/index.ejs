@@ -15,7 +15,7 @@
 <body>
 
 <script>
-  var peer = new Peer({host: '/', port: 7000, path: '/api',secure: true, debug: 3});
+  var peer = new Peer({host: 'meette.me', port: 7000, path: '/api',secure: true, debug: 3});
   //var peer = new Peer({key: '9zqr9jbhn0mmfgvi' ,debug: 3});
   //choose game
   var game_menu;
@@ -175,8 +175,6 @@
   });
 
 
-
-
   peer.on('connection', function(conn) {
     var destinated_id = " ";
 
@@ -199,6 +197,38 @@
     $("#connect_form").submit();
 
   });
+
+
+  peer.on('close', function() {
+    //alert("close");
+
+
+    $.ajax({
+      type: 'POST',
+      url: '/clear',
+      data: {
+        my_peer_id: peer.id,
+      },
+      success: function (msg) {
+        console.log(msg);
+      },
+      error:function(xhr, ajaxOptions, thrownError){
+        alert("clear "+xhr.status);
+        alert("clear "+thrownError);
+      }
+    });
+
+  });
+
+  peer.on('error', function(err) {
+    alert("error");
+
+  });
+
+  //be fired when someone close the web page
+  window.onunload = function () {
+    peer.destroy();
+  }
 
 </script>
 
