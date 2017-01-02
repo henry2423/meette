@@ -203,32 +203,55 @@
     //alert("close");
 
 
+    //make the user who lost connection will be disable
     $.ajax({
       type: 'POST',
-      url: '/clear',
+      url: '/update',
       data: {
-        my_peer_id: peer.id,
+        _id: db_unique_id,
+        on_connect: true,
+        game_mode: 0
       },
       success: function (msg) {
         console.log(msg);
       },
       error:function(xhr, ajaxOptions, thrownError){
-        alert("clear "+xhr.status);
-        alert("clear "+thrownError);
+        //alert("clear "+xhr.status);
+        //alert("clear "+thrownError);
       }
     });
 
   });
 
   peer.on('error', function(err) {
-    alert("error");
+    alert("server timeout");
 
   });
 
+
   //be fired when someone close the web page
-  window.onunload = function () {
+  window.onbeforeunload = function () {
+    /*
+     $.ajax({
+     type: 'POST',
+     url: '/games/clear',
+     data: {
+     my_peer_id: 'my_id',
+     },
+     success: function (msg) {
+     //clear data directly
+     console.log(msg);
+     },
+     error:function(xhr, ajaxOptions, thrownError){
+     alert("clear "+xhr.status);
+     alert("clear "+thrownError);
+     }
+     });
+     */
     peer.destroy();
   }
+
+
 
 </script>
 
@@ -272,8 +295,6 @@
 
     <button id="cancel_wait" name="cancel_wait"> Cancel the Pairing </button><br>
 
-    <input id="data" name="data" type="text">
-    <button id="send_data" > Send </button>
 
   </div>
 

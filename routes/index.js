@@ -96,7 +96,9 @@ router.post('/update', function (req, res) {
 
   Talkdata.findById(req.body._id, function (err, talkdata) {
 
+
     console.log(talkdata);
+    if(talkdata == null) return ;
 
     talkdata.on_connect = req.body.on_connect;
     talkdata.game_mode = req.body.game_mode;
@@ -117,6 +119,7 @@ router.post('/delete', function (req, res) {
   Talkdata.findById(req.body._id, function (err, talkdata) {
 
     console.log(talkdata);
+    if(talkdata == null) return ;
 
     talkdata.remove( function ( err, talkdata) {
       res.writeHead(200, 'success', {'Content-Type': 'text/html'});
@@ -131,22 +134,20 @@ router.post('/delete', function (req, res) {
 
 });
 
+/*
 router.post('/clear', function (req, res){
 
-  console.log("clear "+ req.body.my_peer_id);
+  console.log("clear "+ req.body.db_id);
 
-  Talkdata.findOne({"peer_id": req.body.my_peer_id},function (err, talkdata) {
+  Talkdata.findById(req.body.db_id ,function (err, talkdata) {
 
-    talkdata.remove(function (err, talkdata) {
-      res.writeHead(200, 'delete', {'Content-Type': 'application/json'});
-      res.end();
-    });
+    talkdata.on_connect = true;
 
   });
 
 
 });
-
+*/
 
 router.post('/games', function (req, res){
 

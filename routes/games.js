@@ -20,6 +20,8 @@ router.post('/clear', function (req, res){
 
   Talkdata.findOne({"peer_id": req.body.my_peer_id},function (err, talkdata) {
 
+    if(talkdata == null) return ;
+
     console.log(talkdata);
     var user_data = JSON.stringify({
       name: talkdata.name,
@@ -79,7 +81,7 @@ router.post('/clear', function (req, res){
 
 });
 */
-
+/*
 router.post('/search', function (req, res){
 
   Talkdata.findOne({"peer_id": req.body.my_peer_id},function (err, talkdata) {
@@ -100,7 +102,7 @@ router.post('/search', function (req, res){
   });
 
 });
-
+*/
 
 
 

@@ -81,38 +81,12 @@
   });
 
   peer.on('close', function() {
-      //alert("close");
-      //because this case user is forced to close session, so post user data to /index and delete user data from db
-    /*
-      $.ajax({
-        type: 'POST',
-        url: '/games/clear',
-        data: {
-          my_peer_id: '<%= my_id %>',
-          destinated_peer_id: dest_peer_id
-        },
-        success: function (msg) {
-          //post to games page and redirect and hold to be connect at games page
-          console.log("clear back msg " + msg);
-          document.getElementById("name").value = msg.name;
-          document.getElementById("age").value = msg.age;
-          document.getElementById("hobbies").value = msg.hobbies;
-          document.getElementById("gender").value = msg.gender;
-          document.getElementById("sexual").value = msg.sexual;
-          $("#move_back_form").submit();
-        },
-        error:function(xhr, ajaxOptions, thrownError){
-          alert("clear "+xhr.status);
-          alert("clear "+thrownError);
-        }
-      });
-    */
 
     $.ajax({
       type: 'POST',
       url: '/games/clear',
       data: {
-        my_peer_id: '<%= my_id %>',
+        my_peer_id: '<%= my_id %>'
       },
       success: function (msg) {
         //post to index page and redirect and hold to be connect at index page
@@ -154,7 +128,24 @@
 
 
   //be fired when someone close the web page
-  window.onunload = function () {
+  window.onbeforeunload = function () {
+      /*
+    $.ajax({
+      type: 'POST',
+      url: '/games/clear',
+      data: {
+        my_peer_id: '<%= my_id %>',
+      },
+      success: function (msg) {
+        //clear data directly
+        console.log(msg);
+      },
+      error:function(xhr, ajaxOptions, thrownError){
+        alert("clear "+xhr.status);
+        alert("clear "+thrownError);
+      }
+    });
+    */
     peer.destroy();
   }
 
