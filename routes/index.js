@@ -127,10 +127,7 @@ router.post('/delete', function (req, res) {
       res.end();
     });
 
-
-
   });
-
 
 });
 

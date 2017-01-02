@@ -21,6 +21,7 @@
   var peer = new Peer(['<%= my_id %>'], {host: 'meette.me', port: 7000, path: '/api',secure: true, debug: 3});
   var dest_peer_id = '<%= destinated_id %>';
 
+
   peer.on('open', function(id) {
 
     console.log('My peer ID is: ' + id);
@@ -32,13 +33,20 @@
   {
     var conn = peer.connect(dest_peer_id);
 
+
+    /*
     conn.on('data', function(data) {
-      console.log('Received', data);
+      //console.log('Received', data);
+    });
+    */
+
+    conn.on('open', function () {
+      drawSomething(conn);
     });
 
     $(document).ready(function(){
       $("#send_data").off().click(function () {
-        conn.send(document.getElementById("data").value);
+        conn.send({message: document.getElementById("data").value});
       });
     });
 
@@ -53,19 +61,26 @@
       },3000);
     },5000);
 
+
+
   }
 
 
   peer.on('connection', function(conn) {
 
     dest_peer_id = conn.peer;
+    drawSomething(conn);
 
+    /*
     conn.on('data', function(data) {
-        console.log('Received', data);
+        setUpInfoForConnection(data);
+        //console.log('Received', data);
     });
-
-    $("#send_data").off().click(function () {
-      conn.send(document.getElementById("data").value);
+    */
+    $(document).ready(function() {
+      $("#send_data").off().click(function () {
+        conn.send({message: document.getElementById("data").value});
+      });
     });
 
     //check if the destinate peer close the session then clear own user data by peer.destroy
@@ -134,7 +149,7 @@
       type: 'POST',
       url: '/games/clear',
       data: {
-        my_peer_id: '<%= my_id %>',
+        my_peer_id: 'id',
       },
       success: function (msg) {
         //clear data directly
@@ -149,12 +164,7 @@
     peer.destroy();
   }
 
-
-
-
 </script>
-
-
 
 <script>
 
@@ -241,6 +251,161 @@
 
 </script>
 
+
+<script>
+
+
+
+
+function drawSomething(conn){
+
+  var isDrawing = false;
+  var drawingArea = document.getElementById('drawingArea');
+  var context = drawingArea.getContext("2d");
+
+  //recorded the mouser data
+  var clickX = new Array();
+  var clickY = new Array();
+  var clickDrag = new Array();
+
+  //color recorded
+  var colorPurple = "#cb3594";
+  var colorGreen = "#659b41";
+  var colorYellow = "#ffcf33";
+  var colorBrown = "#986928";
+  var curColor = colorPurple;
+  var clickColor = new Array();
+
+  $('#Purple_color').click(function () {
+    curColor = colorPurple;
+  });
+
+  $('#Green_color').click(function () {
+    curColor = colorGreen;
+  });
+
+  $('#Yello_color').click(function () {
+    curColor = colorYellow;
+  });
+
+  $('#Brown_color').click(function () {
+    curColor = colorBrown;
+  });
+
+
+  $('#drawingArea').mousedown(function(e){
+    var mouseX = e.pageX - this.offsetLeft;
+    var mouseY = e.pageY - this.offsetTop;
+
+    isDrawing = true;
+    addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
+    redraw();
+  }).mousemove(function(e){
+    if(isDrawing){
+      addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+      redraw();
+    }
+  }).mouseup(function(e){
+    isDrawing = false;
+  }).mouseleave(function(e){
+    isDrawing = false;
+  });
+
+
+
+  function addClick(x, y, dragging)
+  {
+    clickX.push(x);
+    clickY.push(y);
+    clickDrag.push(dragging);
+    clickColor.push(curColor);
+
+    //send to destination
+    conn.send({clickX: x, clickY: y, clickDrag: dragging, curColor: curColor});
+  }
+
+  function redraw(){
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+
+    context.lineJoin = "round";
+    context.lineWidth = 5;
+
+    for(var i=0; i < clickX.length; i++) {
+      context.beginPath();
+      if(clickDrag[i] && i){
+        context.moveTo(clickX[i-1], clickY[i-1]);
+      }else{
+        context.moveTo(clickX[i]-1, clickY[i]);
+      }
+      context.lineTo(clickX[i], clickY[i]);
+      context.closePath();
+      context.strokeStyle = clickColor[i];
+      context.stroke();
+    }
+  }
+
+
+
+  //peers convas picture
+  var peersArea = document.getElementById('destinationArea');
+  var peersContext = peersArea.getContext("2d");
+
+  //recorded the mouser data
+  var peersClickX = new Array();
+  var peersClickY = new Array();
+  var peersClickDrag = new Array();
+
+  //peers color recored
+  var peersClickColor = new Array();
+
+  function peersRedraw(){
+    peersContext.clearRect(0, 0, peersContext.canvas.width, peersContext.canvas.height); // Clears the canvas
+
+    peersContext.lineJoin = "round";
+    peersContext.lineWidth = 5;
+
+    for(var i=0; i < peersClickX.length; i++) {
+      peersContext.beginPath();
+      if(peersClickDrag[i] && i){
+        peersContext.moveTo(peersClickX[i-1], peersClickY[i-1]);
+      }else{
+        peersContext.moveTo(peersClickX[i]-1, peersClickY[i]);
+      }
+      peersContext.lineTo(peersClickX[i], peersClickY[i]);
+      peersContext.closePath();
+      peersContext.strokeStyle = peersClickColor[i];
+      peersContext.stroke();
+    }
+  }
+
+
+
+  //dataTransfer
+  conn.on('data', function (data) {
+
+    if (data.message) {
+      console.log(data.message);
+    } else if (data.clickX && data.clickY) {
+      peersClickX.push(data.clickX);
+      peersClickY.push(data.clickY);
+      peersClickDrag.push(data.clickDrag);
+      peersClickColor.push(data.curColor);
+      peersRedraw();
+    } else {
+      //addToStatus("Received data from " + conn.peer + ": " + data);
+    }
+  });
+
+
+
+}
+
+
+
+
+
+</script>
+
 <!-- the form is for send data to games page -->
 <form id = "move_back_form" action='/' method="POST">
   <input type="hidden" id="name" name="name" type="text" value=" ">
@@ -275,7 +440,26 @@
     <button id="send_data" name="send_data"> Send </button> <br>
 
     <audio id="peer_call" name="peer_call" controls=" "> </audio>
-    <button id="call" name="call"> Call </button>
+    <button id="call" name="call"> Call </button> <br>
+
+  <div class="drawSomething">
+
+
+    <button id="Purple_color" name="Purple_color"> Purple </button>
+    <button id="Green_color" name="Green_color"> Green </button>
+    <button id="Yello_color" name="Yello_color"> Yello </button>
+    <button id="Brown_color" name="Brown_color"> Brown </button>
+
+
+    <canvas id="drawingArea" name="drawingArea" width="800" height="500" style="border:1px solid">
+    </canvas>
+    <canvas id="destinationArea" name="destinationArea" width="800" height="500" style="border:1px solid">
+    </canvas>
+
+
+  </div>
+
+
 
 
     <button id="leave_room" name="leave_room"> Close </button>
