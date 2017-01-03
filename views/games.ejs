@@ -33,37 +33,44 @@
   {
 
 
-    conn = peer.connect(dest_peer_id);
-    conn.on('open', function () {
-      drawSomething(conn);
-    });
-
-
-
-    /*
-    conn.on('data', function(data) {
-      //console.log('Received', data);
-    });
-    */
-
-
-
-    $(document).ready(function(){
-      $("#send_data").off().click(function () {
-        conn.send({message: document.getElementById("data").value});
-      });
-    });
-
-
-    //check if the destinate peer close the session
     setTimeout(function () {
-      setInterval(function () {
-        if(conn.open == false)
-        {
-          peer.destroy();
-        }
-      },3000);
-    },15000);
+      var conn = peer.connect(dest_peer_id);
+
+
+
+      conn.on('open', function () {
+        drawSomething(conn);
+      });
+
+
+
+      /*
+       conn.on('data', function(data) {
+       //console.log('Received', data);
+       });
+       */
+
+
+
+      $(document).ready(function(){
+        $("#send_data").off().click(function () {
+          conn.send({message: document.getElementById("data").value});
+        });
+      });
+
+
+      //check if the destinate peer close the session
+      setTimeout(function () {
+        setInterval(function () {
+          if(conn.open == false)
+          {
+            peer.destroy();
+          }
+        },3000);
+      },15000);
+
+
+    },3000);
 
 
 
