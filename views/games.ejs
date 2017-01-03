@@ -32,9 +32,9 @@
   if(<%= host %>)
   {
 
-
+    var conn;
     setTimeout(function () {
-      var conn = peer.connect(dest_peer_id);
+      conn = peer.connect(dest_peer_id);
       conn.on('open', function () {
         drawSomething(conn);
       });
@@ -65,7 +65,7 @@
           peer.destroy();
         }
       },3000);
-    },5000);
+    },10000);
 
 
 
