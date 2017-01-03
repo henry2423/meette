@@ -26,21 +26,29 @@
 
     console.log('My peer ID is: ' + id);
 
-  });
+    if(<%= host %>)
+    {
 
 
-  if(<%= host %>)
-  {
 
-
-    setTimeout(function () {
       var conn = peer.connect(dest_peer_id);
+
+
+      setTimeout(function () {
+        while(conn.open == false)
+          conn = peer.connect(dest_peer_id);
+      },3000);
+
+
+
 
 
 
       conn.on('open', function () {
         drawSomething(conn);
       });
+
+
 
 
 
@@ -69,12 +77,15 @@
         },3000);
       },15000);
 
+    }
 
-    },3000);
+  });
 
 
 
-  }
+
+
+
 
 
   peer.on('connection', function(conn) {
@@ -390,7 +401,6 @@ function drawSomething(conn){
   }
 
 
-
   //dataTransfer
   conn.on('data', function (data) {
 
@@ -406,6 +416,7 @@ function drawSomething(conn){
       //addToStatus("Received data from " + conn.peer + ": " + data);
     }
   });
+
 
 
 
