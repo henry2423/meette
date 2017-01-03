@@ -35,6 +35,10 @@
 
     setTimeout(function () {
       var conn = peer.connect(dest_peer_id);
+      conn.on('open', function () {
+        drawSomething(conn);
+      });
+
     },2000);
 
 
@@ -44,9 +48,7 @@
     });
     */
 
-    conn.on('open', function () {
-      drawSomething(conn);
-    });
+
 
     $(document).ready(function(){
       $("#send_data").off().click(function () {
