@@ -31,7 +31,11 @@
 
   if(<%= host %>)
   {
-    var conn = peer.connect(dest_peer_id);
+
+
+    setTimeout(function () {
+      var conn = peer.connect(dest_peer_id);
+    },2000);
 
 
     /*

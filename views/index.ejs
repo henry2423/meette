@@ -248,7 +248,23 @@
      }
      });
      */
-    peer.destroy();
+    //make the user who lost connection will be disable
+    $.ajax({
+      type: 'POST',
+      url: '/update',
+      data: {
+        _id: db_unique_id,
+        on_connect: true,
+        game_mode: 0
+      },
+      success: function (msg) {
+        console.log(msg);
+      },
+      error:function(xhr, ajaxOptions, thrownError){
+        //alert("clear "+xhr.status);
+        //alert("clear "+thrownError);
+      }
+    });
   }
 
 
