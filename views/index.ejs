@@ -85,6 +85,7 @@
           document.getElementById("my_id").value = peer.id;
           document.getElementById("destinated_id").value = dest_peer_id;
           document.getElementById("host").value = true;
+          document.getElementById("game_mode").value = game_menu;
           $("#connect_form").submit();
         }
       });
@@ -184,8 +185,7 @@
       url: '/update',
       data: {
         _id: db_unique_id,
-        on_connect: true,
-        game_mode: game_menu
+        on_connect: true
       }
     });
 
@@ -194,6 +194,7 @@
     document.getElementById("my_id").value = peer.id;
     document.getElementById("destinated_id").value = destinated_id;
     document.getElementById("host").value = false;
+    document.getElementById("game_mode").value = game_menu;
     $("#connect_form").submit();
 
   });
@@ -209,8 +210,7 @@
       url: '/update',
       data: {
         _id: db_unique_id,
-        on_connect: true,
-        game_mode: 0
+        on_connect: true
       },
       success: function (msg) {
         console.log(msg);
@@ -290,9 +290,10 @@
 
     <!-- the form is for send data to games page -->
     <form id = "connect_form" action="/games" method="POST">
-      <input type="hidden" id="my_id" name="my_id" value=" " />
-      <input type="hidden" id="destinated_id" name="destinated_id" value=" " />
-      <input type="hidden" id="host" name="host" value=" " />
+      <input type="hidden" id="my_id" name="my_id"  />
+      <input type="hidden" id="destinated_id" name="destinated_id" />
+      <input type="hidden" id="host" name="host" />
+      <input type="hidden" id="game_mode" name="game_mode" />
     </form>
 
 

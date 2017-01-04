@@ -4,6 +4,49 @@ var router = express.Router();
 var mongoose = require( 'mongoose' );
 var Talkdata = mongoose.model( 'Talkdata' );
 
+var drawSomething_question = [
+  "猴子",
+  "飛機",
+  "汽車",
+  "狗",
+  "鴨子",
+  "老鼠",
+  "吹風機",
+  "燈泡",
+  "熱氣球",
+  "雞蛋",
+  "放大鏡",
+  "墨鏡",
+  "雨傘",
+  "圍巾",
+  "冰淇淋",
+  "紅包",
+  "紅綠燈",
+  "方向盤",
+  "鋼琴",
+  "小提琴",
+  "吉他",
+  "二胡",
+  "保險套",
+  "偉生棉",
+  "風車",
+  "風箏",
+  "蘋果",
+  "鳳梨",
+  "香蕉",
+  "西瓜",
+  "啤酒",
+  "足球",
+  "籃球",
+  "高爾夫球",
+  "動物園",
+  "飯店",
+  "蛇",
+  "蝸牛",
+  "裙子",
+  "小丑"
+];
+
 
 router.get('/', function(req, res) {
 
@@ -37,6 +80,20 @@ router.post('/clear', function (req, res){
     });
 
   });
+
+
+});
+
+router.post('/getDrawTopic', function (req, res){
+
+
+    var random_chose = Math.floor(Math.random() * drawSomething_question.length);
+
+    console.log("DrawTopic is "+ drawSomething_question[random_chose]);
+
+
+    res.writeHead(200, 'delete', {'Content-Type': 'text/html; charset=utf-8'});
+    res.end(drawSomething_question[random_chose]);
 
 
 });

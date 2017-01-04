@@ -101,7 +101,6 @@ router.post('/update', function (req, res) {
     if(talkdata == null) return ;
 
     talkdata.on_connect = req.body.on_connect;
-    talkdata.game_mode = req.body.game_mode;
 
     talkdata.save( function ( err, talkdata, count ) {
       res.writeHead(200, 'success', {'Content-Type': 'text/html'});
@@ -166,7 +165,7 @@ router.post('/games', function (req, res){
   res.end();
    */
   console.log(req.body);
-  res.render('games.ejs',{my_id: req.body.my_id, destinated_id: req.body.destinated_id, host: req.body.host});
+  res.render('games.ejs',{my_id: req.body.my_id, destinated_id: req.body.destinated_id, host: req.body.host, game_mode: req.body.game_mode});
 
 });
 

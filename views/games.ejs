@@ -35,7 +35,14 @@
     var conn = peer.connect(dest_peer_id);
 
     conn.on('open', function () {
-      drawSomething(conn);
+
+      if(<%= game_mode %> == 0)
+      {
+        drawSomething(conn);
+      }
+      //else game_menu
+
+
     });
 
     /*
@@ -61,7 +68,7 @@
           peer.destroy();
         }
       },3000);
-    },15000);
+    },8000);
 
   }
 
@@ -69,7 +76,14 @@
   peer.on('connection', function(conn) {
 
     dest_peer_id = conn.peer;
-    drawSomething(conn);
+
+    if(<%= game_mode %> == 0)
+    {
+      drawSomething(conn);
+    }
+    //else game_menu
+
+
 
     /*
     conn.on('data', function(data) {
@@ -91,7 +105,7 @@
           peer.destroy();
         }
       },3000);
-    },15000);
+    },8000);
 
   });
 
@@ -259,6 +273,61 @@
 
 function drawSomething(conn){
 
+  var my_draw_topic;
+  var peers_draw_topic = " ";
+
+  //hide the answer the input bar
+  $('#my_guess').hide();
+  $('#draw_answer_submit').hide();
+
+  $.ajax({
+    type: 'POST',
+    url: '/games/getDrawTopic',
+    data: {
+    },
+    success: function (msg) {
+      //give me my topic
+      my_draw_topic = msg;
+      document.getElementById('my_draw_topic').innerHTML = "我的題目是： " + msg;
+    },
+    error:function(xhr, ajaxOptions, thrownError){
+      alert("clear "+xhr.status);
+      alert("clear "+thrownError);
+    }
+  });
+
+
+  //after 60secs give destinate the answer to check
+  var times_up = setTimeout(function () {
+      conn.send({game_answer: my_draw_topic});
+      $('#my_guess').show();
+      $('#draw_answer_submit').show();
+  },60000);
+
+  //if answer has been submit
+  $('#draw_answer_submit').off().click(function () {
+
+      if(peers_draw_topic != " ")
+      {
+        conn.send({my_answer: document.getElementById('my_guess').value});
+
+        if(document.getElementById('my_guess').value == peers_draw_topic)
+        {
+          document.getElementById('peers_draw_topic').innerHTML = "答對了";
+          $('#peers_draw_topic').show();
+        }
+        else
+        {
+          document.getElementById('peers_draw_topic').innerHTML = "不是歐，答案是：" + peers_draw_topic;
+          $('#peers_draw_topic').show();
+        }
+
+        $('#my_guess').hide();
+        $('#draw_answer_submit').hide();
+      }
+  });
+
+
   var isDrawing = false;
   var drawingArea = document.getElementById('drawingArea');
   var context = drawingArea.getContext("2d");
@@ -276,22 +345,34 @@ function drawSomething(conn){
   var curColor = colorPurple;
   var clickColor = new Array();
 
-  $('#Purple_color').click(function () {
+  $('#Purple_color').off().click(function () {
     curColor = colorPurple;
   });
 
-  $('#Green_color').click(function () {
+  $('#Green_color').off().click(function () {
     curColor = colorGreen;
   });
 
-  $('#Yello_color').click(function () {
+  $('#Yello_color').off().click(function () {
     curColor = colorYellow;
   });
 
-  $('#Brown_color').click(function () {
+  $('#Brown_color').off().click(function () {
     curColor = colorBrown;
   });
 
+  $('#eraser').off().click(function () {
+    curColor = "white";
+  });
+
+  $('#clear_draw').off().click(function () {
+    clickX.length = 0;
+    clickY.length = 0;
+    clickDrag.length = 0;
+    clickColor.length = 0;
+    redraw();
+    conn.send({clear_draw: true});
+  });
 
   $('#drawingArea').mousedown(function(e){
     var mouseX = e.pageX - this.offsetLeft;
@@ -340,6 +421,10 @@ function drawSomething(conn){
       context.lineTo(clickX[i], clickY[i]);
       context.closePath();
       context.strokeStyle = clickColor[i];
+      if(context.strokeStyle == "#ffffff")
+        context.lineWidth = 20;
+      else
+        context.lineWidth = 5;
       context.stroke();
     }
   }
@@ -365,6 +450,7 @@ function drawSomething(conn){
     peersContext.lineWidth = 5;
 
     for(var i=0; i < peersClickX.length; i++) {
+
       peersContext.beginPath();
       if(peersClickDrag[i] && i){
         peersContext.moveTo(peersClickX[i-1], peersClickY[i-1]);
@@ -374,6 +460,10 @@ function drawSomething(conn){
       peersContext.lineTo(peersClickX[i], peersClickY[i]);
       peersContext.closePath();
       peersContext.strokeStyle = peersClickColor[i];
+      if(peersContext.strokeStyle == "#ffffff")
+        peersContext.lineWidth = 20;
+      else
+        peersContext.lineWidth = 5;
       peersContext.stroke();
     }
   }
@@ -390,8 +480,19 @@ function drawSomething(conn){
       peersClickDrag.push(data.clickDrag);
       peersClickColor.push(data.curColor);
       peersRedraw();
-    } else {
-      //addToStatus("Received data from " + conn.peer + ": " + data);
+    } else if(data.clear_draw){
+      if(data.clear_draw == true)
+      {
+        peersClickX.length = 0;
+        peersClickY.length = 0;
+        peersClickDrag.length = 0;
+        peersClickColor.length = 0;
+        peersRedraw();
+      }
+    } else if(data.game_answer) {
+      peers_draw_topic = data.game_answer;
+    } else if(data.my_answer) {
+      document.getElementById('peers_guess').innerHTML = "他覺得是：" + data.my_answer;
     }
   });
 
@@ -408,11 +509,11 @@ function drawSomething(conn){
 
 <!-- the form is for send data to games page -->
 <form id = "move_back_form" action='/' method="POST">
-  <input type="hidden" id="name" name="name" type="text" value=" ">
-  <input type="hidden" id="age" name="age" type="text" value=" ">
-  <input type="hidden" id="hobbies" name="hobbies" type="text" value=" ">
-  <input type="hidden" id="gender" name="gender" type="text" value=" ">
-  <input type="hidden" id="sexual" name="sexual" type="text" value=" ">
+  <input type="hidden" id="name" name="name" type="text" >
+  <input type="hidden" id="age" name="age" type="text" >
+  <input type="hidden" id="hobbies" name="hobbies" type="text" >
+  <input type="hidden" id="gender" name="gender" type="text" >
+  <input type="hidden" id="sexual" name="sexual" type="text" >
 </form>
 
 
@@ -445,10 +546,19 @@ function drawSomething(conn){
   <div class="drawSomething">
 
 
+    <p id="my_draw_topic" name="my_draw_topic"> </p>
+
+    <input id="my_guess" name="my_guess" type="text">
+    <button id="draw_answer_submit" name="draw_answer_submit"> Subimt Answer </button>
+    <p id="peers_draw_topic" name="peers_draw_topic"> </p>
+    <p id="peers_guess" name="peers_guess"> </p>
+
     <button id="Purple_color" name="Purple_color"> Purple </button>
     <button id="Green_color" name="Green_color"> Green </button>
     <button id="Yello_color" name="Yello_color"> Yello </button>
     <button id="Brown_color" name="Brown_color"> Brown </button>
+    <button id="eraser" name="eraser"> Eraser </button>
+    <button id="clear_draw" name="clear_draw"> Clear </button>
 
 
     <canvas id="drawingArea" name="drawingArea" width="800" height="500" style="border:1px solid">
