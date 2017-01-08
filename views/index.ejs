@@ -5,318 +5,152 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <title><%= title %></title>
-  <link rel=stylesheet type="text/css" href="/css/css_style.css">
+  <!-- font from google -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900" rel="stylesheet">
+  <!-- bootstrap css -->
+
+  <link rel=stylesheet type="text/css" href="/css/bootstrap.min.css">
+  <link rel=stylesheet type="text/css" href="/css/index.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="/js/peer.js"></script>
+  <!-- bootstrap javascript -->
+  <script src="/js/bootstrap.min.js"></script>
+
 
 </head>
 
 
 <body>
 
-<script>
-  var peer = new Peer({host: 'meette.me', port: 7000, path: '/api',secure: true, debug: 3});
-  //var peer = new Peer({key: '9zqr9jbhn0mmfgvi' ,debug: 3});
-  //choose game
-  var game_menu;
-  var db_unique_id = " ";
+  <script src="/js/peer_client_index.js"></script>
 
-  peer.on('open', function(id) {
-    console.log('My peer ID is: ' + id);
-  });
-
-
-  function pair(game_menu) {
-
-    //find someone to pair
-    $.ajax({
-      type: 'POST',
-      url: '/search',
-      data: {
-        age: document.getElementById("age").value,
-        gender: document.getElementById("sexual").value,
-        sexual: document.getElementById("gender").value,
-        game_mode: game_menu
-      },
-      success: function (msg) {
-        get_result_from_pair(msg);
-      },
-      error:function(xhr, ajaxOptions, thrownError){
-        alert("search "+xhr.status);
-        alert("search "+thrownError);
-      }
-    });
-
-  }
-
-  function get_result_from_pair(msg){
-    //if pair redirect to games otherwise wait in the database
-
-    var dest_peer_id = msg;
-
-    if(dest_peer_id != "-1")
-    {
-      //this connect is for notify dest_peer to redirect to game page
-      var conn = peer.connect(dest_peer_id);
-
-      //create host itself to database w/ on_connect: true
-      $.ajax({
-        type: 'POST',
-        url: '/register',
-        data: {
-          peer_id: peer.id,
-          name: document.getElementById("name").value,
-          age: document.getElementById("age").value,
-          hobbies: document.getElementById("hobbies").value,
-          gender: document.getElementById("gender").value,
-          sexual: document.getElementById("sexual").value,
-          on_connect: true,
-          game_mode: game_menu
-        }, success: function(msg) {
-          console.log(msg);
-          //alert("unique_id "+msg);
-          db_unique_id = msg;
-
-        }, error:function(xhr, ajaxOptions, thrownError){
-          alert("register1 "+xhr.status);
-          alert("register1 "+thrownError);
-        }, complete: function (jqXHR, textStatus) {
-          //post to games page and redirect
-          document.getElementById("my_id").value = peer.id;
-          document.getElementById("destinated_id").value = dest_peer_id;
-          document.getElementById("host").value = true;
-          document.getElementById("game_mode").value = game_menu;
-          $("#connect_form").submit();
-        }
-      });
-
-    }
-    else
-    {
-      //create host itself to database w/ on_connect: false
-      $.ajax({
-        type: 'POST',
-        url: '/register',
-        data: {
-          peer_id: peer.id,
-          name: document.getElementById("name").value,
-          age: document.getElementById("age").value,
-          hobbies: document.getElementById("hobbies").value,
-          gender: document.getElementById("gender").value,
-          sexual: document.getElementById("sexual").value,
-          on_connect: false,
-          game_mode: game_menu
-        },
-        success: function(msg) {
-          //alert('Data Saved: ' + msg);
-          console.log("unique_id "+msg);
-          db_unique_id = msg;
-        },
-        error:function(xhr, ajaxOptions, thrownError){
-          alert("register2 "+xhr.status);
-          alert("register2 "+thrownError);
-        }
-      });
-    }
-  }
+  <!-- the form is for send data to games page -->
+  <form id = "connect_form" action="/games" method="POST">
+    <input type="hidden" id="my_id" name="my_id"  />
+    <input type="hidden" id="destinated_id" name="destinated_id" />
+    <input type="hidden" id="host" name="host" />
+    <input type="hidden" id="game_mode" name="game_mode" />
+  </form>
 
 
 
-  function submit() {
+  <canvas id="circle"  width=600px height= 450px ></canvas>
+  <script>
+    var canvas = document.getElementById('circle');
+    var context = canvas.getContext('2d');
+    var imageObj = new Image();
 
-    //update UI function future
-    $("#submit_user").hide();
+    imageObj.onload = function() {
+      context.drawImage(imageObj,-150,-280,700,700);
+    };
+    imageObj.src = '/img/circle.png';
 
-
-    //choose game
-    game_menu = 0;
-
-    $("#games_choose").off().click( function () {
-
-      pair(game_menu);
-      $("#games_choose").hide();
-      $("#cancel_wait").show();
-    });
-
-  }
-
-
-
-  $(document).ready(function () {
-    //cancel the pairing process
-
-    $("#cancel_wait").off().click(function(){
-      //update UI
-      $("#submit_user").show();
-      $("#games_choose").show();
-      $("#cancel_wait").hide();
-
-      //ajax delete the user data if exist
-      if(db_unique_id != " ")
-      {
-        $.ajax({
-          type: 'POST',
-          url: '/delete',
-          data: {
-            _id: db_unique_id,
-          }, success: function(msg) {
-            console.log("delete "+msg);
-
-          }, error:function(xhr, ajaxOptions, thrownError){
-            alert("update "+xhr.status);
-            alert("update "+thrownError);
-          }, complete: function () {
-            //go to the user setting view (updateUI)
-            db_unique_id = " ";
-          }
-        });
-      }
-
-    });
-  });
-
-
-  peer.on('connection', function(conn) {
-    var destinated_id = " ";
-
-    //ajax update the on_connect status to true
-    $.ajax({
-      type: 'POST',
-      url: '/update',
-      data: {
-        _id: db_unique_id,
-        on_connect: true
-      }
-    });
-
-
-    //post to games page and redirect and hold to be connect at games page
-    document.getElementById("my_id").value = peer.id;
-    document.getElementById("destinated_id").value = destinated_id;
-    document.getElementById("host").value = false;
-    document.getElementById("game_mode").value = game_menu;
-    $("#connect_form").submit();
-
-  });
-
-
-  peer.on('close', function() {
-    //alert("close");
-
-
-    //make the user who lost connection will be disable
-    $.ajax({
-      type: 'POST',
-      url: '/update',
-      data: {
-        _id: db_unique_id,
-        on_connect: true
-      },
-      success: function (msg) {
-        console.log(msg);
-      },
-      error:function(xhr, ajaxOptions, thrownError){
-        //alert("clear "+xhr.status);
-        //alert("clear "+thrownError);
-      }
-    });
-
-  });
-
-  peer.on('error', function(err) {
-    alert("server timeout");
-
-  });
-
-
-  //be fired when someone close the web page
-  window.onbeforeunload = function () {
     /*
-     $.ajax({
-     type: 'POST',
-     url: '/games/clear',
-     data: {
-     my_peer_id: 'my_id',
-     },
-     success: function (msg) {
-     //clear data directly
-     console.log(msg);
-     },
-     error:function(xhr, ajaxOptions, thrownError){
-     alert("clear "+xhr.status);
-     alert("clear "+thrownError);
-     }
-     });
-     */
-    //make the user who lost connection will be disable
-    $.ajax({
-      type: 'POST',
-      url: '/update',
-      data: {
-        _id: db_unique_id,
-        on_connect: true,
-        game_mode: 0
-      },
-      success: function (msg) {
-        console.log(msg);
-      },
-      error:function(xhr, ajaxOptions, thrownError){
-        //alert("clear "+xhr.status);
-        //alert("clear "+thrownError);
-      }
-    });
-  }
+    setInterval(function () {
+      context.clearRect(0,0,canvas.width,canvas.height);
+      context.translate(canvas.width/2,canvas.height/2);
+      context.rotate(10 * Math.PI / 180);
+      context.drawImage(imageObj, -imageObj.width/2,-imageObj.width/2);
+      context.restore();
+    },2000);
+*/
 
 
 
-</script>
-
-<div class="container">
-
-  <header>
-
-    <div class="header">
-
-    </div>
-
-    <div class="footer">
-      <p class="footstyle">&copy; 2016 All Right Reserved. </p>
-    </div>
-
-  </header>
+  </script>
 
 
-  <div class="sidebody">
+  <p id="logo">meette</p>
+  <p id="logo2">羅 密 歐 與 茱 麗 葉</p>
 
-    <!-- the form is for send data to games page -->
-    <form id = "connect_form" action="/games" method="POST">
-      <input type="hidden" id="my_id" name="my_id"  />
-      <input type="hidden" id="destinated_id" name="destinated_id" />
-      <input type="hidden" id="host" name="host" />
-      <input type="hidden" id="game_mode" name="game_mode" />
+  <img id="top_dots" src="/img/top_dots.png" >
+
+
+
+
+  <div class="container menu_form" role="main">
+    <!-- //user's data setting -->
+    <form class="form-horizontal" role="form" >
+
+      <div class="form-group form-group-lg form_div">
+          <label class="col-lg-2 col-md-2 col-sm-2 col-xs-2  control-label" for="male female">Gender</label>
+          <div class="form_pic col-lg-4 col-md-4 col-sm-4 col-xs-4 col-lg-offset-2 col-md-offset-1 col-sm-offset-1 " >
+            <a onclick="choosegender('1')" href="javascript:void(0);" title="male" >
+              <img id="gender_male_pic" src="/img/male.png" alt="male" width="100px" height="auto" >
+            </a>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 " >
+            <a onclick="choosegender('0')" href="javascript:void(0);" title="female">
+              <img id="gender_female_pic" src="/img/female.png" alt="male" width="100px" height="auto">
+            </a>
+          </div>
+      </div>
+
+
+      <div class="form-group form-group-lg form_div">
+        <label class="col-sm-2 control-label" for="name">Name</label>
+        <div class="col-sm-7 col-sm-offset-2" >
+          <input class="form-control" id="name" name="name" type="text" value='<%= name %>'>
+        </div>
+      </div>
+
+      <div class="form-group form-group-lg form_div">
+        <label class="col-sm-2 control-label" for="age">Age</label>
+        <div class="col-sm-7 col-sm-offset-2">
+          <input class="form-control center-block" id="age" name="age" type="text" value='<%= age %>'>
+        </div>
+      </div>
+
+      <div class="form-group form-group-lg form_div">
+        <label class="col-lg-2 col-md-2 col-sm-2 col-xs-2  control-label" for="male female">Interest</label>
+        <div class=" form_pic col-lg-4 col-md-4 col-sm-4 col-xs-4 col-lg-offset-2 col-md-offset-1 col-sm-offset-1" >
+          <a onclick="chooseinterest('1')" href="javascript:void(0);" title="male">
+            <img id="sexual_male_pic" src="/img/male.png" alt="male" width="100px" height="auto">
+          </a>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 " >
+          <a onclick="chooseinterest('0')" href="javascript:void(0);" title="female">
+            <img id="sexual_female_pic" src="/img/female.png" alt="male" width="100px" height="auto">
+          </a>
+        </div>
+      </div>
+
+
+
     </form>
 
+    <button class="btn btn-success center-block" id="submit_user" name="submit_user" onclick="submit()" > Submit </button>
 
 
 
-    <!-- //user's data setting -->
-    <input id="name" name="name" type="text" value='<%= name %>'>
-    <input id="age" name="age" type="text" value='<%= age %>'>
-    <input id="hobbies" name="hobbies" type="text" value='<%= hobbies %>'>
-    <input id="gender" name="gender" type="text" value='<%= gender %>'>
-    <input id="sexual" name="sexual" type="text" value='<%= sexual %>'>
-    <button id="submit_user" name="submit_user" onclick="submit()" > Submit </button><br>
+    <input type="hidden" class="form-control center-block" id="hobbies" name="hobbies" type="text" value='<%= hobbies %>'>
+    <input type="hidden" class="form-control center-block" id="gender" name="gender" type="text" value='<%= gender %>'>
+    <input type="hidden" class="form-control center-block" id="sexual" name="sexual" type="text" value='<%= sexual %>'>
+
 
     <!-- //game's menu choose  -->
-    <button id="games_choose" name="games_choose"> Pair </button><br>
+    <button class="spec_button center-block" id="games_choose" name="games_choose"> Pair </button>
 
-    <button id="cancel_wait" name="cancel_wait"> Cancel the Pairing </button><br>
-
+    <button class="spec_button center-block" id="cancel_wait" name="cancel_wait"> Cancel </button>
 
   </div>
 
+  <p id="slogan">
+    meette <br>
+    with <br>
+    your <br>
+    destiny
+  </p>
 
-</div>
+
+  <img id="bottom_dots" src="/img/bottom_dots.png" >
+
+
+
+
+
+
+
 
 
 </body>
