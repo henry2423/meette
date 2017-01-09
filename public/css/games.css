@@ -27,7 +27,7 @@ body{
   position:relative;
   top:-5px;
   left:10px;
-  z-index: 5;
+  z-index: 3;
   font-size: 100px;
   color: white;
 }
@@ -115,6 +115,11 @@ body{
   top: 30%;
   right: 8%;
   z-index: 1;
+}
+
+.space_menu{
+  margin-top: 80px;
+  margin-bottom: 50px;
 }
 
 .spec_button {
@@ -206,16 +211,25 @@ audio {
 
 #drawingArea{
   border:2.5px dotted #F9BDBD;
-  width: 100%;
-  height: 46%;
+  width: 58vw;
+  min-width: 700px;
+  height: 40%;
+  z-index: 7;
+  position: absolute;
+  top: 10%;
+  right: 5vw;
 
 }
 
 #destinationArea{
   border:2.5px dotted #F9BDBD;
-  width: 100%;
-  height: 46%;
-
+  width: 58vw;
+  min-width: 700px;
+  height: 43%;
+  z-index: 7;
+  position: absolute;
+  top: 51%;
+  right: 5vw;
 }
 
 .paint_button {

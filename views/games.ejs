@@ -29,6 +29,9 @@
   //var peer = new Peer([''], {key: '9zqr9jbhn0mmfgvi', debug: 3});
   var peer = new Peer(['<%= my_id %>'], {host: 'meette.me', port: 7000, path: '/api',secure: true, debug: 3});
   var dest_peer_id = '<%= destinated_id %>';
+  var call_answer;
+  var call_setup = false;
+  var want_to_play = false;   //想要再玩一次
 
 
   peer.on('open', function(id) {
@@ -84,12 +87,42 @@
      });
      */
 
-
-
     $(document).ready(function(){
       $("#send_data").off().click(function () {
         conn.send({message: document.getElementById("data").value});
       });
+
+      $("#want_to_call").off().click(function () {
+
+        conn.send({ask: "call"});
+        if(call_answer == true) {   //確認對方也想要才能接通
+          call_to_dest();
+          $(this).hide();
+        }
+        else {
+          $(this).button('loading');
+          $(this).prop("disable",true);
+        }
+
+      });
+
+      $("#want_to_play").off().click(function () {
+
+        conn.send({ask: "play_again"});
+
+        if(want_to_play == true) {   //確認對方也想要才能在下一局
+          drawSomething(conn);
+          want_to_play = false;
+          $(this).hide();
+        }
+        else {
+          $(this).button('loading');
+          $(this).prop("disable",true);
+          want_to_play = true;
+        }
+      });
+
+
     });
 
 
@@ -117,7 +150,6 @@
     //else game_menu
 
 
-
     /*
      conn.on('data', function(data) {
      setUpInfoForConnection(data);
@@ -128,6 +160,37 @@
       $("#send_data").off().click(function () {
         conn.send({message: document.getElementById("data").value});
       });
+
+      $("#want_to_call").off().click(function () {
+
+        conn.send({ask: "call"});
+
+        if(call_answer == true) { //確認對方也想要才能接通
+          call_to_dest();
+          $(this).hide();
+        }
+        else {
+          $(this).button('loading');
+          $(this).prop("disable",true);
+        }
+      });
+
+      $("#want_to_play").off().click(function () {
+
+        conn.send({ask: "play_again"});
+
+        if(want_to_play == true) {   //確認對方也想要才能在下一局
+          drawSomething(conn);
+          want_to_play = false;
+          $(this).hide();
+        }
+        else {
+          $(this).button('loading');
+          $(this).prop("disable",true);
+          want_to_play = true;
+        }
+      });
+
     });
 
     //check if the destinate peer close the session then clear own user data by peer.destroy
@@ -148,17 +211,31 @@
 
 <script>
 
-  $(document).ready(function () {
-    $('#my_guess').hide();
-    $('#draw_answer_submit').hide();
-    $('#my_guess_topic').hide();
-  });
+$(document).ready(function () {
+  $('#my_guess').hide();
+  $('#draw_answer_submit').hide();
+  $('#my_guess_topic').hide();
+  $('#peers_draw_topic').hide();
+  $('#want_to_call').hide();
+  $('#want_to_play').hide();
+});
+
 
 function drawSomething(conn){
 
   $('#my_guess').hide();
   $('#draw_answer_submit').hide();
   $('#my_guess_topic').hide();
+  $('#peers_draw_topic').hide();
+  $('#peers_guess').hide();
+  $('#want_to_call').hide();
+  $('#want_to_play').hide();
+  document.getElementById('my_guess').value = "";
+  $('#want_to_call').button('reset');
+  $("#want_to_call").prop("disable",false);
+  $('#want_to_play').button('reset');
+  $("#want_to_play").prop("disable",false);
+
 
   var my_draw_topic;
   var peers_draw_topic = " ";
@@ -189,17 +266,26 @@ function drawSomething(conn){
 
 
   //after 60secs give destinate the answer to check
-  var times_up = setTimeout(function () {
+  var clear_time = setTimeout(function () {
       window.clearInterval(times);
       $('#left_time').hide();
       time_secs = 60;
 
       //停止作畫
+      context.fillStyle='rgba(225,225,225,0.5)';
+      context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+      peersContext.fillStyle='rgba(225,225,225,0.5)';
+      peersContext.fillRect(0, 0, peersContext.canvas.width, peersContext.canvas.height);
+
+      //context = 0;
+      //peersContext = 0;
 
       conn.send({game_answer: my_draw_topic});
       $('#my_guess').show();
       $('#draw_answer_submit').show();
-  },60000);
+
+
+  },5000);
 
   //if answer has been submit
   $('#draw_answer_submit').off().click(function () {
@@ -222,14 +308,46 @@ function drawSomething(conn){
         $('#my_guess').hide();
         $('#draw_answer_submit').hide();
       }
+
+    if(call_setup == false)
+      $('#want_to_call').show();
+
+    $('#want_to_play').show();
+
+    window.clearTimeout(clear_time);
   });
 
 
+  /*
+  // function to get an element's exact position
+  function GetScreenCordinates(obj) {
+    var p = {};
+    p.x = obj.offsetLeft;
+    p.y = obj.offsetTop;
+    while (obj.offsetParent) {
+      p.x = p.x + obj.offsetParent.offsetLeft;
+      p.y = p.y + obj.offsetParent.offsetTop;
+      if (obj == document.getElementsByTagName("body")[0]) {
+        break;
+      }
+      else {
+        obj = obj.offsetParent;
+      }
+    }
+    return p;
+  }
+
+*/
   var isDrawing = false;
   var drawingArea = document.getElementById('drawingArea');
+  drawingArea.width = parseInt(window.getComputedStyle(drawingArea,null).getPropertyValue("width"));
+  drawingArea.height = parseInt(window.getComputedStyle(drawingArea,null).getPropertyValue("height"));
   var context = drawingArea.getContext("2d");
+  //context = drawingArea.getContext("2d");
+
   //context.canvas.width = window.getComputedStyle(drawingArea,null).getPropertyValue("width");
   //context.canvas.height = window.getComputedStyle(drawingArea,null).getPropertyValue("height");
+  //var edgeArea = document.getElementById('game_outside_div');
 
 
   //recorded the mouser data
@@ -277,11 +395,11 @@ function drawSomething(conn){
   $('#drawingArea').mousedown(function(e){
 
     isDrawing = true;
-    addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
+    addClick(e.pageX - this.offsetLeft , e.pageY -this.offsetTop , false);
     redraw();
   }).mousemove(function(e){
     if(isDrawing){
-      addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+      addClick(e.pageX - this.offsetLeft  , e.pageY - this.offsetTop , true);
       redraw();
     }
   }).mouseup(function(e){
@@ -331,7 +449,10 @@ function drawSomething(conn){
 
   //peers convas picture
   var peersArea = document.getElementById('destinationArea');
+  peersArea.width = parseInt(window.getComputedStyle(peersArea,null).getPropertyValue("width"));
+  peersArea.height = parseInt(window.getComputedStyle(peersArea,null).getPropertyValue("height"));
   var peersContext = peersArea.getContext("2d");
+  //peersContext = peersArea.getContext("2d");
   //peersContext.canvas.width = window.getComputedStyle(peersArea,null).getPropertyValue("width");
   //peersContext.canvas.height = window.getComputedStyle(peersArea,null).getPropertyValue("height");
 
@@ -392,7 +513,9 @@ function drawSomething(conn){
     } else if(data.game_answer) {
       peers_draw_topic = data.game_answer;
     } else if(data.my_answer) {
+      $('#peers_guess').show();
       document.getElementById('peers_guess').innerHTML = "他的猜測是：" + data.my_answer;
+
     } else if(data.initial_inform) {
       //非host端收取destina_id 資料
       dest_peer_id = data.initial_inform;
@@ -418,7 +541,27 @@ function drawSomething(conn){
           alert("clear "+thrownError);
         }
       });
+    } else if(data.ask) {
+        if(data.ask == "call")
+        {
+          call_answer = true;
+          //$("#want_to_call").prop("disable",true);
+        }
+        else if(data.ask == "play_again")
+        {
+            if(want_to_play == true)
+            {
+              drawSomething(conn);
+              want_to_play = false;
+            }
+            else
+                want_to_play = true;
+        }
+
     }
+
+
+
   });
 
   peer.on('close', function() {
@@ -446,13 +589,13 @@ function drawSomething(conn){
     });
 
   });
-
+  /*
   peer.on('error', function(err) {
     alert("error");
 
   });
 
-
+  */
 
 }
 
@@ -502,6 +645,9 @@ function drawSomething(conn){
       <p id="peers_draw_topic" name="peers_draw_topic"> </p>
       <p id="peers_guess" name="peers_guess"> </p>
 
+      <button class="spec_button space_menu" id="want_to_call" name="want_to_call" data-loading-text="等待回應"> 打給他 </button>
+      <button class="spec_button" id="want_to_play" name="want_to_leave" data-loading-text="等待回應"> 再玩一局 </button>
+
     </div>
 
 
@@ -512,28 +658,34 @@ function drawSomething(conn){
       <p class="profile_age" id="dest_age"> </p>
       <button class="spec_button" id="leave_room" name="leave_room">Leave</button>
 
-      <audio id="peer_call" name="peer_call" controls=" "> </audio>
-      <button id="call" name="call"> Call </button> <br>
+      <audio id="peer_call" name="peer_call" controls=""> </audio>
+
 
     </div>
 
-
-
-
   </div>
+
+
+
+
+
+
+
+
 
 
 
   <img id="top_dots" src="/img/top_dots.png" >
 
 
-
+<canvas id="drawingArea" name="drawingArea" width="835px" height="285px"> </canvas>
+<canvas id="destinationArea" name="destinationArea" width="835px" height="285px" > </canvas>
 
 
   <div class="game_outside_div">
     <div class="game_div">
 
-      <div class="drawSomething">
+      <div id="drawsomething_div" class="drawSomething">
 
         <button class="paint_button purple" id="Purple_color" name="Purple_color"> Purple </button>
         <button class="paint_button green" id="Green_color" name="Green_color"> Green </button>
@@ -542,8 +694,9 @@ function drawSomething(conn){
         <button class="paint_button eraser" id="eraser" name="eraser"> Eraser </button>
         <button class="paint_button " id="clear_draw" name="clear_draw"> Clear </button>
 
-        <canvas id="drawingArea" name="drawingArea" width="1000" height="500"> </canvas>
-        <canvas id="destinationArea" name="destinationArea" width="1000" height="500" > </canvas>
+
+
+
 
 
       </div>
@@ -551,6 +704,8 @@ function drawSomething(conn){
 
     </div>
   </div>
+
+
 
 
 

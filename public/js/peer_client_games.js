@@ -9,6 +9,8 @@ $(document).ready(function () {
     //when user click leaver, clear own data from db and move back to index page with their own data
     peer.destroy();
   });
+
+
 });
 
 
@@ -43,6 +45,9 @@ window.onbeforeunload = function () {
 
 peer.on('call', function(incoming) {
 
+  call_setup = true;
+
+  $("#want_to_call").hide();
   //fetching call
   navigator.getUserMedia =  navigator.getUserMedia ||
     navigator.webkitGetUserMedia ||
@@ -79,12 +84,10 @@ peer.on('call', function(incoming) {
 
 
 
-$(document).ready(function () {
 
-  $("#call").off().click(function(){
+function call_to_dest() {
 
-
-
+    call_setup = true;
     //fetching call
     navigator.getUserMedia =  (navigator.getUserMedia ||
     navigator.webkitGetUserMedia ||
@@ -115,6 +118,5 @@ $(document).ready(function () {
     });
 
 
-  });
 
-});
+}
