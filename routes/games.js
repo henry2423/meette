@@ -50,13 +50,13 @@ var drawSomething_question = [
 
 router.get('/', function(req, res) {
 
-/*
+
   res.writeHead(301,
     {Location: '/'}
   );
   res.end();
-*/
-  res.render('games.ejs',{my_id: 123434, destinated_id: 123123, host: false, game_mode: 0});
+
+  //res.render('games.ejs',{my_id: 123434, destinated_id: 123123, host: false, game_mode: 0});
 });
 
 router.post('/clear', function (req, res){

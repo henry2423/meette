@@ -72,7 +72,7 @@
           document.getElementById('gender_pic').src = '/img/female.png';
 
         document.getElementById('dest_name').innerHTML = msg.name;
-        document.getElementById('dest_age').innerHTML = msg.age;
+        document.getElementById('dest_age').innerHTML = msg.age + "歲";
 
       },
       error:function(xhr, ajaxOptions, thrownError){
@@ -111,9 +111,10 @@
         conn.send({ask: "play_again"});
 
         if(want_to_play == true) {   //確認對方也想要才能在下一局
-          drawSomething(conn);
           want_to_play = false;
           $(this).hide();
+          drawSomething(conn);
+
         }
         else {
           $(this).button('loading');
@@ -180,9 +181,9 @@
         conn.send({ask: "play_again"});
 
         if(want_to_play == true) {   //確認對方也想要才能在下一局
-          drawSomething(conn);
           want_to_play = false;
           $(this).hide();
+          drawSomething(conn);
         }
         else {
           $(this).button('loading');
@@ -285,7 +286,7 @@ function drawSomething(conn){
       $('#draw_answer_submit').show();
 
 
-  },5000);
+  },61000);
 
   //if answer has been submit
   $('#draw_answer_submit').off().click(function () {
