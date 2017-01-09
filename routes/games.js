@@ -50,11 +50,13 @@ var drawSomething_question = [
 
 router.get('/', function(req, res) {
 
+
   res.writeHead(301,
     {Location: '/'}
   );
   res.end();
 
+  //res.render('games.ejs',{my_id: 123434, destinated_id: 123123, host: false, game_mode: 0});
 });
 
 router.post('/clear', function (req, res){
@@ -138,28 +140,27 @@ router.post('/clear', function (req, res){
 
 });
 */
-/*
+
 router.post('/search', function (req, res){
 
-  Talkdata.findOne({"peer_id": req.body.my_peer_id},function (err, talkdata) {
+  Talkdata.findOne({"peer_id": req.body.dest_peer_id},function (err, talkdata) {
 
     var user_data =  JSON.stringify({
       name: talkdata.name,
       age: talkdata.age,
       hobbies: talkdata.hobbies,
-      gender: talkdata.gender,
-      sexual: talkdata.sexual
+      gender: talkdata.gender
     });
 
     console.log("search "+user_data);
 
-    res.writeHead(200, 'delete', {'Content-Type': 'application/json'});
+    res.writeHead(200, 'search', {'Content-Type': 'application/json'});
     res.end(user_data);
 
   });
 
 });
-*/
+
 
 
 

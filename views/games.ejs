@@ -5,9 +5,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <title>Space</title>
-  <link rel=stylesheet type="text/css" href="/css/css_style.css">
+
+  <!-- font from google -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900" rel="stylesheet">
+  <!-- bootstrap css -->
+
+  <link rel=stylesheet type="text/css" href="/css/bootstrap.min.css">
+  <link rel=stylesheet type="text/css" href="/css/games.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="/js/peer.js"></script>
+  <!-- bootstrap javascript -->
+  <script src="/js/bootstrap.min.js"></script>
+
 
 </head>
 
@@ -16,8 +25,8 @@
 
 <script>
 
-  //var peer = new Peer(['<%= my_id %>'], {host: 'peerjserver.herokuapp.com', port: 443, secure: true, debug: 3});
-  //var peer = new Peer(['<%= my_id %>'], {key: '9zqr9jbhn0mmfgvi', debug: 3});
+  //var peer = new Peer([''], {host: 'peerjserver.herokuapp.com', port: 443, secure: true, debug: 3});
+  //var peer = new Peer([''], {key: '9zqr9jbhn0mmfgvi', debug: 3});
   var peer = new Peer(['<%= my_id %>'], {host: 'meette.me', port: 7000, path: '/api',secure: true, debug: 3});
   var dest_peer_id = '<%= destinated_id %>';
 
@@ -28,7 +37,6 @@
 
   });
 
-
   if(<%= host %>)
   {
 
@@ -36,13 +44,38 @@
 
     conn.on('open', function () {
 
-      if(<%= game_mode %> == 0)
-      {
-        drawSomething(conn);
+        if(<%= game_mode %> == 0)
+        {
+          drawSomething(conn);
+          conn.send({initial_inform: peer.id});
+        }
+
+    });
+
+
+
+
+    $.ajax({
+      type: 'POST',
+      url: '/games/search',
+      data: {
+        dest_peer_id: dest_peer_id
+      },
+      success: function (msg) {
+        //give me my topic
+        if(msg.gender == 'male')
+          document.getElementById('gender_pic').src = '/img/male.png';
+        else
+          document.getElementById('gender_pic').src = '/img/female.png';
+
+        document.getElementById('dest_name').innerHTML = msg.name;
+        document.getElementById('dest_age').innerHTML = msg.age;
+
+      },
+      error:function(xhr, ajaxOptions, thrownError){
+        alert("clear "+xhr.status);
+        alert("clear "+thrownError);
       }
-      //else game_menu
-
-
     });
 
     /*
@@ -72,10 +105,10 @@
 
   }
 
-
   peer.on('connection', function(conn) {
 
     dest_peer_id = conn.peer;
+
 
     if(<%= game_mode %> == 0)
     {
@@ -86,11 +119,11 @@
 
 
     /*
-    conn.on('data', function(data) {
-        setUpInfoForConnection(data);
-        //console.log('Received', data);
-    });
-    */
+     conn.on('data', function(data) {
+     setUpInfoForConnection(data);
+     //console.log('Received', data);
+     });
+     */
     $(document).ready(function() {
       $("#send_data").off().click(function () {
         conn.send({message: document.getElementById("data").value});
@@ -109,176 +142,27 @@
 
   });
 
-  peer.on('close', function() {
-
-    $.ajax({
-      type: 'POST',
-      url: '/games/clear',
-      data: {
-        my_peer_id: '<%= my_id %>'
-      },
-      success: function (msg) {
-        //post to index page and redirect and hold to be connect at index page
-        console.log("clear back msg " + msg);
-        document.getElementById("name").value = msg.name;
-        document.getElementById("age").value = msg.age;
-        document.getElementById("hobbies").value = msg.hobbies;
-        document.getElementById("gender").value = msg.gender;
-        document.getElementById("sexual").value = msg.sexual;
-        $("#move_back_form").submit();
-      },
-      error:function(xhr, ajaxOptions, thrownError){
-        alert("clear "+xhr.status);
-        alert("clear "+thrownError);
-      }
-    });
-
-  });
-
-  peer.on('error', function(err) {
-    alert("error");
-
-  });
-
-
-
-  $(document).ready(function () {
-    //if the someone cancel the session
-    var cancel_peer_id;
-
-    $("#leave_room").off().click(function(){
-        //update UI
-
-        //when user click leaver, clear own data from db and move back to index page with their own data
-        peer.destroy();
-    });
-  });
-
-
-
-  //be fired when someone close the web page
-  window.onbeforeunload = function () {
-      /*
-    $.ajax({
-      type: 'POST',
-      url: '/games/clear',
-      data: {
-        my_peer_id: 'id',
-      },
-      success: function (msg) {
-        //clear data directly
-        console.log(msg);
-      },
-      error:function(xhr, ajaxOptions, thrownError){
-        alert("clear "+xhr.status);
-        alert("clear "+thrownError);
-      }
-    });
-    */
-    peer.destroy();
-  }
-
 </script>
+
+<script src="/js/peer_client_games.js"> </script>
 
 <script>
 
-
-  peer.on('call', function(incoming) {
-
-    //fetching call
-    navigator.getUserMedia =  navigator.getUserMedia ||
-      navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia ||
-      navigator.msGetUserMedia;
-
-
-      navigator.getUserMedia({
-          audio: true, video: false
-      }, function(stream) {
-        //replay local audio stream to destinate
-        // Answer the call, providing our mediaStream
-        incoming.answer(stream);
-      }, function(error){
-        console.log(error);
-        alert('An error occured. Please try again');
-      });
-
-
-    incoming.on('stream', function(stream){
-
-      //get call setting
-      var audio = document.getElementById('peer_call');
-      var audio_url = window.URL || window.webKitURL || window.mozURL;
-
-      audio.src = audio_url.createObjectURL(stream);
-      audio.play();
-
-    });
-
-  });
-
-
-
-
-
   $(document).ready(function () {
-
-    $("#call").off().click(function(){
-
-
-
-      //fetching call
-      navigator.getUserMedia =  (navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia ||
-        navigator.msGetUserMedia);
-
-
-      navigator.getUserMedia({
-        audio: true, video: false
-      }, function(stream) {
-        //replay local audio stream to destinate
-        // Answer the call, providing our mediaStream
-        var call = peer.call(dest_peer_id, stream);
-
-        call.on('stream', function(stream) {
-          // `stream` is the MediaStream of the remote peer.
-
-          //get call setting
-          var audio = document.getElementById('peer_call');
-          var audio_url = window.URL || window.webKitURL || window.mozURL;
-
-          audio.src = audio_url.createObjectURL(stream);
-          audio.play();
-        });
-      }, function(error){
-        console.log(error);
-        alert('An error occured. Please try again');
-      });
-
-
-    });
-
+    $('#my_guess').hide();
+    $('#draw_answer_submit').hide();
+    $('#my_guess_topic').hide();
   });
-
-
-
-</script>
-
-
-<script>
-
-
-
 
 function drawSomething(conn){
+
+  $('#my_guess').hide();
+  $('#draw_answer_submit').hide();
+  $('#my_guess_topic').hide();
 
   var my_draw_topic;
   var peers_draw_topic = " ";
 
-  //hide the answer the input bar
-  $('#my_guess').hide();
-  $('#draw_answer_submit').hide();
 
   $.ajax({
     type: 'POST',
@@ -296,9 +180,22 @@ function drawSomething(conn){
     }
   });
 
+  var time_secs = 60;
+  var times = setInterval(function () {
+    $('#left_time').show();
+    document.getElementById('left_time').innerHTML = "剩下時間： " + time_secs;
+    time_secs--;
+  },1000);
+
 
   //after 60secs give destinate the answer to check
   var times_up = setTimeout(function () {
+      window.clearInterval(times);
+      $('#left_time').hide();
+      time_secs = 60;
+
+      //停止作畫
+
       conn.send({game_answer: my_draw_topic});
       $('#my_guess').show();
       $('#draw_answer_submit').show();
@@ -318,7 +215,7 @@ function drawSomething(conn){
         }
         else
         {
-          document.getElementById('peers_draw_topic').innerHTML = "不是歐，答案是：" + peers_draw_topic;
+          document.getElementById('peers_draw_topic').innerHTML = "不是歐<br>答案是：" + peers_draw_topic;
           $('#peers_draw_topic').show();
         }
 
@@ -331,6 +228,9 @@ function drawSomething(conn){
   var isDrawing = false;
   var drawingArea = document.getElementById('drawingArea');
   var context = drawingArea.getContext("2d");
+  //context.canvas.width = window.getComputedStyle(drawingArea,null).getPropertyValue("width");
+  //context.canvas.height = window.getComputedStyle(drawingArea,null).getPropertyValue("height");
+
 
   //recorded the mouser data
   var clickX = new Array();
@@ -338,7 +238,7 @@ function drawSomething(conn){
   var clickDrag = new Array();
 
   //color recorded
-  var colorPurple = "#cb3594";
+  var colorPurple = "#d835a1";
   var colorGreen = "#659b41";
   var colorYellow = "#ffcf33";
   var colorBrown = "#986928";
@@ -375,8 +275,6 @@ function drawSomething(conn){
   });
 
   $('#drawingArea').mousedown(function(e){
-    var mouseX = e.pageX - this.offsetLeft;
-    var mouseY = e.pageY - this.offsetTop;
 
     isDrawing = true;
     addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, false);
@@ -434,6 +332,8 @@ function drawSomething(conn){
   //peers convas picture
   var peersArea = document.getElementById('destinationArea');
   var peersContext = peersArea.getContext("2d");
+  //peersContext.canvas.width = window.getComputedStyle(peersArea,null).getPropertyValue("width");
+  //peersContext.canvas.height = window.getComputedStyle(peersArea,null).getPropertyValue("height");
 
   //recorded the mouser data
   var peersClickX = new Array();
@@ -492,22 +392,73 @@ function drawSomething(conn){
     } else if(data.game_answer) {
       peers_draw_topic = data.game_answer;
     } else if(data.my_answer) {
-      document.getElementById('peers_guess').innerHTML = "他覺得是：" + data.my_answer;
+      document.getElementById('peers_guess').innerHTML = "他的猜測是：" + data.my_answer;
+    } else if(data.initial_inform) {
+      //非host端收取destina_id 資料
+      dest_peer_id = data.initial_inform;
+      $.ajax({
+        type: 'POST',
+        url: '/games/search',
+        data: {
+          dest_peer_id: dest_peer_id
+        },
+        success: function (msg) {
+          //give me my topic
+          if(msg.gender == 'male')
+            document.getElementById('gender_pic').src = '/img/male.png';
+          else
+            document.getElementById('gender_pic').src = '/img/female.png';
+
+          document.getElementById('dest_name').innerHTML = msg.name;
+          document.getElementById('dest_age').innerHTML = msg.age;
+
+        },
+        error:function(xhr, ajaxOptions, thrownError){
+          alert("clear "+xhr.status);
+          alert("clear "+thrownError);
+        }
+      });
     }
   });
 
+  peer.on('close', function() {
+
+    $.ajax({
+      type: 'POST',
+      url: '/games/clear',
+      data: {
+        my_peer_id: '<%= my_id %>'
+      },
+      success: function (msg) {
+        //post to index page and redirect and hold to be connect at index page
+        console.log("clear back msg " + msg);
+        document.getElementById("name").value = msg.name;
+        document.getElementById("age").value = msg.age;
+        document.getElementById("hobbies").value = msg.hobbies;
+        document.getElementById("gender").value = msg.gender;
+        document.getElementById("sexual").value = msg.sexual;
+        $("#move_back_form").submit();
+      },
+      error:function(xhr, ajaxOptions, thrownError){
+        //alert("clear "+xhr.status);
+        //alert("clear "+thrownError);
+      }
+    });
+
+  });
+
+  peer.on('error', function(err) {
+    alert("error");
+
+  });
 
 
 
 }
 
-
-
-
-
 </script>
 
-<!-- the form is for send data to games page -->
+<!-- the form is for send data to index page -->
 <form id = "move_back_form" action='/' method="POST">
   <input type="hidden" id="name" name="name" type="text" >
   <input type="hidden" id="age" name="age" type="text" >
@@ -519,68 +470,98 @@ function drawSomething(conn){
 
 
 
+  <canvas id="circle"  width=600px height= 450px ></canvas>
+  <script>
+    var canvas2 = document.getElementById('circle');
+    var context2 = canvas2.getContext('2d');
+    var imageObj = new Image();
 
-<div class="container">
+    imageObj.onload = function() {
+      context2.drawImage(imageObj,-150,-280,700,700);
+    };
+    imageObj.src = '/img/circle.png';
 
-  <header>
 
-    <div class="header">
+  </script>
+
+  <div class="information_div">
+
+    <p id="logo">meette</p>
+    <p id="logo2">with your destiny</p>
+
+
+    <div class="game_interated_div">
+
+      <p id="left_time" name="left_time"> </p>
+      <p id="my_draw_topic" name="my_draw_topic"> </p>
+
+      <p id="my_guess_topic" name="my_guess_topic">他畫的是：</p>
+      <input id="my_guess" name="my_guess" type="text">
+      <button class="spec_button" id="draw_answer_submit" name="draw_answer_submit"> 送出猜測 </button>
+
+      <p id="peers_draw_topic" name="peers_draw_topic"> </p>
+      <p id="peers_guess" name="peers_guess"> </p>
 
     </div>
 
-    <div class="footer">
-      <p class="footstyle">&copy; 2016 All Right Reserved. </p>
+
+    <div class="dest_div">
+
+      <img id="gender_pic" class="gender_pic" src='/img/male.png' >
+      <p class="profile_name" id="dest_name"> </p>
+      <p class="profile_age" id="dest_age"> </p>
+      <button class="spec_button" id="leave_room" name="leave_room">Leave</button>
+
+      <audio id="peer_call" name="peer_call" controls=" "> </audio>
+      <button id="call" name="call"> Call </button> <br>
+
     </div>
 
-  </header>
 
-
-  <div class="sidebody">
-
-    <input id="data" name="data" type="text">
-    <button id="send_data" name="send_data"> Send </button> <br>
-
-    <audio id="peer_call" name="peer_call" controls=" "> </audio>
-    <button id="call" name="call"> Call </button> <br>
-
-  <div class="drawSomething">
-
-
-    <p id="my_draw_topic" name="my_draw_topic"> </p>
-
-    <input id="my_guess" name="my_guess" type="text">
-    <button id="draw_answer_submit" name="draw_answer_submit"> Subimt Answer </button>
-    <p id="peers_draw_topic" name="peers_draw_topic"> </p>
-    <p id="peers_guess" name="peers_guess"> </p>
-
-    <button id="Purple_color" name="Purple_color"> Purple </button>
-    <button id="Green_color" name="Green_color"> Green </button>
-    <button id="Yello_color" name="Yello_color"> Yello </button>
-    <button id="Brown_color" name="Brown_color"> Brown </button>
-    <button id="eraser" name="eraser"> Eraser </button>
-    <button id="clear_draw" name="clear_draw"> Clear </button>
-
-
-    <canvas id="drawingArea" name="drawingArea" width="800" height="500" style="border:1px solid">
-    </canvas>
-    <canvas id="destinationArea" name="destinationArea" width="800" height="500" style="border:1px solid">
-    </canvas>
 
 
   </div>
 
 
 
+  <img id="top_dots" src="/img/top_dots.png" >
 
-    <button id="leave_room" name="leave_room"> Close </button>
 
-    <footer class="panel-footer text-center navbar-fixed-bottom" >
-      &copy; 2016 All Right Reserved.
-    </footer>
+
+
+
+  <div class="game_outside_div">
+    <div class="game_div">
+
+      <div class="drawSomething">
+
+        <button class="paint_button purple" id="Purple_color" name="Purple_color"> Purple </button>
+        <button class="paint_button green" id="Green_color" name="Green_color"> Green </button>
+        <button class="paint_button yello" id="Yello_color" name="Yello_color"> Yello </button>
+        <button class="paint_button brown" id="Brown_color" name="Brown_color"> Brown </button>
+        <button class="paint_button eraser" id="eraser" name="eraser"> Eraser </button>
+        <button class="paint_button " id="clear_draw" name="clear_draw"> Clear </button>
+
+        <canvas id="drawingArea" name="drawingArea" width="1000" height="500"> </canvas>
+        <canvas id="destinationArea" name="destinationArea" width="1000" height="500" > </canvas>
+
+
+      </div>
+
+
+    </div>
   </div>
 
 
-</div>
+
+
+
+
+
+
+
+
+
 
 
 </body>

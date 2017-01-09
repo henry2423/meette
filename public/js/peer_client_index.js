@@ -241,8 +241,8 @@ peer.on('close', function() {
       console.log(msg);
     },
     error:function(xhr, ajaxOptions, thrownError){
-      //alert("clear "+xhr.status);
-      //alert("clear "+thrownError);
+      alert("clear "+xhr.status);
+      alert("clear "+thrownError);
     }
   });
 
