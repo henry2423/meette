@@ -31,7 +31,8 @@
   var dest_peer_id = '<%= destinated_id %>';
   var call_answer;
   var call_setup = false;
-  var want_to_play = false;   //想要再玩一次
+  var dest_want_to_play = false;   //想要再玩一次
+  var i_want_to_play = false;
 
 
   peer.on('open', function(id) {
@@ -110,8 +111,7 @@
 
         conn.send({ask: "play_again"});
 
-        if(want_to_play == true) {   //確認對方也想要才能在下一局
-          want_to_play = false;
+        if(dest_want_to_play == true) {   //確認對方也想要才能在下一局
           $(this).hide();
           drawSomething(conn);
 
@@ -119,7 +119,7 @@
         else {
           $(this).button('loading');
           $(this).prop("disable",true);
-          want_to_play = true;
+          i_want_to_play = true;
         }
       });
 
@@ -180,15 +180,15 @@
 
         conn.send({ask: "play_again"});
 
-        if(want_to_play == true) {   //確認對方也想要才能在下一局
-          want_to_play = false;
+        if(dest_want_to_play == true) {   //確認對方也想要才能在下一局
+          dest_want_to_play = false;
           $(this).hide();
           drawSomething(conn);
         }
         else {
           $(this).button('loading');
           $(this).prop("disable",true);
-          want_to_play = true;
+          i_want_to_play = true;
         }
       });
 
@@ -224,6 +224,9 @@ $(document).ready(function () {
 
 function drawSomething(conn){
 
+
+  dest_want_to_play = false;
+  i_want_to_play = false;
   $('#my_guess').hide();
   $('#draw_answer_submit').hide();
   $('#my_guess_topic').hide();
@@ -280,7 +283,7 @@ function drawSomething(conn){
 
       //context = 0;
       //peersContext = 0;
-
+      gameStop = true;
       conn.send({game_answer: my_draw_topic});
       $('#my_guess').show();
       $('#draw_answer_submit').show();
@@ -339,6 +342,7 @@ function drawSomething(conn){
   }
 
 */
+  var gameStop = false;
   var isDrawing = false;
   var drawingArea = document.getElementById('drawingArea');
   drawingArea.width = parseInt(window.getComputedStyle(drawingArea,null).getPropertyValue("width"));
@@ -423,27 +427,32 @@ function drawSomething(conn){
   }
 
   function redraw(){
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
 
-    context.lineJoin = "round";
-    context.lineWidth = 5;
+      if(gameStop == false)
+      {
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
 
-    for(var i=0; i < clickX.length; i++) {
-      context.beginPath();
-      if(clickDrag[i] && i){
-        context.moveTo(clickX[i-1], clickY[i-1]);
-      }else{
-        context.moveTo(clickX[i]-1, clickY[i]);
-      }
-      context.lineTo(clickX[i], clickY[i]);
-      context.closePath();
-      context.strokeStyle = clickColor[i];
-      if(context.strokeStyle == "#ffffff")
-        context.lineWidth = 20;
-      else
+        context.lineJoin = "round";
         context.lineWidth = 5;
-      context.stroke();
-    }
+
+        for(var i=0; i < clickX.length; i++) {
+          context.beginPath();
+          if(clickDrag[i] && i){
+            context.moveTo(clickX[i-1], clickY[i-1]);
+          }else{
+            context.moveTo(clickX[i]-1, clickY[i]);
+          }
+          context.lineTo(clickX[i], clickY[i]);
+          context.closePath();
+          context.strokeStyle = clickColor[i];
+          if(context.strokeStyle == "#ffffff")
+            context.lineWidth = 20;
+          else
+            context.lineWidth = 5;
+          context.stroke();
+        }
+      }
+
   }
 
 
@@ -466,28 +475,33 @@ function drawSomething(conn){
   var peersClickColor = new Array();
 
   function peersRedraw(){
-    peersContext.clearRect(0, 0, peersContext.canvas.width, peersContext.canvas.height); // Clears the canvas
 
-    peersContext.lineJoin = "round";
-    peersContext.lineWidth = 5;
+    if(gameStop == false)
+    {
+      peersContext.clearRect(0, 0, peersContext.canvas.width, peersContext.canvas.height); // Clears the canvas
 
-    for(var i=0; i < peersClickX.length; i++) {
+      peersContext.lineJoin = "round";
+      peersContext.lineWidth = 5;
 
-      peersContext.beginPath();
-      if(peersClickDrag[i] && i){
-        peersContext.moveTo(peersClickX[i-1], peersClickY[i-1]);
-      }else{
-        peersContext.moveTo(peersClickX[i]-1, peersClickY[i]);
+      for(var i=0; i < peersClickX.length; i++) {
+
+        peersContext.beginPath();
+        if(peersClickDrag[i] && i){
+          peersContext.moveTo(peersClickX[i-1], peersClickY[i-1]);
+        }else{
+          peersContext.moveTo(peersClickX[i]-1, peersClickY[i]);
+        }
+        peersContext.lineTo(peersClickX[i], peersClickY[i]);
+        peersContext.closePath();
+        peersContext.strokeStyle = peersClickColor[i];
+        if(peersContext.strokeStyle == "#ffffff")
+          peersContext.lineWidth = 20;
+        else
+          peersContext.lineWidth = 5;
+        peersContext.stroke();
       }
-      peersContext.lineTo(peersClickX[i], peersClickY[i]);
-      peersContext.closePath();
-      peersContext.strokeStyle = peersClickColor[i];
-      if(peersContext.strokeStyle == "#ffffff")
-        peersContext.lineWidth = 20;
-      else
-        peersContext.lineWidth = 5;
-      peersContext.stroke();
     }
+
   }
 
 
@@ -534,7 +548,7 @@ function drawSomething(conn){
             document.getElementById('gender_pic').src = '/img/female.png';
 
           document.getElementById('dest_name').innerHTML = msg.name;
-          document.getElementById('dest_age').innerHTML = msg.age;
+          document.getElementById('dest_age').innerHTML = msg.age + "歲";
 
         },
         error:function(xhr, ajaxOptions, thrownError){
@@ -550,13 +564,10 @@ function drawSomething(conn){
         }
         else if(data.ask == "play_again")
         {
-            if(want_to_play == true)
-            {
-              drawSomething(conn);
-              want_to_play = false;
-            }
+            if(i_want_to_play == true)
+                drawSomething(conn);
             else
-                want_to_play = true;
+                dest_want_to_play = true;
         }
 
     }

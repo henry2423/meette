@@ -7,7 +7,7 @@ var Talkdata = mongoose.model( 'Talkdata' );
 /* GET home page. */
 
 router.get('/', function(req, res) {
-  res.render('index.ejs',{title: 'meette', name: '', age: '', hobbies: 'paino', gender: 'male', sexual: 'male'});
+  res.render('index.ejs',{title: 'meette', name: '', age: '', hobbies: 'paino', gender: '', sexual: ''});
 });
 
 router.post('/', function (req, res){

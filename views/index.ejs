@@ -22,6 +22,32 @@
 
   <script src="/js/peer_client_index.js"></script>
 
+  <script>
+  //for games page come back identify male or female photo
+    $(document).ready(function () {
+        if('<%= gender %>' == 'male')
+        {
+          document.getElementById("gender_male_pic").src = '/img/male.png';
+          document.getElementById("gender_female_pic").src = '/img/unselect.png';
+        }else if('<%= gender %>' == 'female')
+        {
+          document.getElementById("gender_female_pic").src = '/img/female.png';
+          document.getElementById("gender_male_pic").src = '/img/unselect.png';
+        }
+
+        if('<%= sexual %>' == 'male')
+        {
+          document.getElementById("sexual_male_pic").src = '/img/male.png';
+          document.getElementById("sexual_female_pic").src = '/img/unselect.png';
+        }else if('<%= sexual %>' == 'female')
+        {
+          document.getElementById("sexual_female_pic").src = '/img/female.png';
+          document.getElementById("sexual_male_pic").src = '/img/unselect.png';
+        }
+
+    });
+  </script>
+
   <!-- the form is for send data to games page -->
   <form id = "connect_form" action="/games" method="POST">
     <input type="hidden" id="my_id" name="my_id"  />
