@@ -1,4 +1,6 @@
-var peer = new Peer({host: 'meette.me', port: 7000, path: '/api',secure: true, debug: 3});
+var peer = new Peer({host: 'meette.me', port: 7000, path: '/api',secure: true,config: { 'iceServers': [
+  { 'url': 'stun:stun.l.google.com:19302' }
+] } , debug: 3});
 //var peer = new Peer({key: '9zqr9jbhn0mmfgvi' ,debug: 3});
 //choose game
 var game_menu;

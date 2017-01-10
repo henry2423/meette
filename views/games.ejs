@@ -27,7 +27,9 @@
 
   //var peer = new Peer([''], {host: 'peerjserver.herokuapp.com', port: 443, secure: true, debug: 3});
   //var peer = new Peer([''], {key: '9zqr9jbhn0mmfgvi', debug: 3});
-  var peer = new Peer(['<%= my_id %>'], {host: 'meette.me', port: 7000, path: '/api',secure: true, debug: 3});
+  var peer = new Peer(['<%= my_id %>'], {host: 'meette.me', port: 7000, path: '/api',secure: true,config: { 'iceServers': [
+    { 'url': 'stun:stun.l.google.com:19302' }
+  ] } , debug: 3});
   var dest_peer_id = '<%= destinated_id %>';
   var call_answer;
   var call_setup = false;
