@@ -1,20 +1,24 @@
 
-var peer = new Peer({host: 'meette.me', port: 7000, path: '/api',secure: true,turn: true, config: { 'iceServers': [
- // { 'url': 'stun:stun.skyway.io:3478' },
-  {'url':'stun:stun.ekiga.net'},
-  {'url':'stun:stun.ideasip.com'},
-  {'url':'stun:stun.schlund.de'},
-  {'url':'stun:stun.l.google.com:19302'},
-  {'url':'stun:stun1.l.google.com:19302'},
-  {'url':'stun:stun2.l.google.com:19302'},
-  {'url':'stun:stun3.l.google.com:19302'},
-  {'url':'stun:stun4.l.google.com:19302'},
-  {
-    'url': 'turn:numb.viagenie.ca',
-    credential: 'muazkh',
-    username: 'webrtc@live.com'
-  }
-] } , debug: 3});
+var peer = new Peer({host: 'meette.me', port: 7000, path: '/api',secure: true,turn: true, debug: 3});
+/*
+ , config: { 'iceServers': [
+ {'url': 'turn:homeo@turn.bistri.com:80', credential: 'homeo' },
+ {'url':'stun:stun.ekiga.net'},
+ {'url':'stun:stun.ideasip.com'},
+ {'url':'stun:stun.schlund.de'},
+ {'url':'stun:stun.l.google.com:19302'},
+ {'url':'stun:stun1.l.google.com:19302'},
+ {'url':'stun:stun2.l.google.com:19302'},
+ {'url':'stun:stun3.l.google.com:19302'},
+ {'url':'stun:stun4.l.google.com:19302'},
+ {
+ 'url': 'turn:numb.viagenie.ca',
+ credential: 'muazkh',
+ username: 'webrtc@live.com'
+ }
+ ] }
+ */
+
 
 //var peer = new Peer({key: '2640a314-2f9a-4012-940b-67c418868b0b' ,debug: 3});
 //choose game

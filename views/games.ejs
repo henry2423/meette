@@ -28,7 +28,9 @@
   //var peer = new Peer([''], {host: 'peerjserver.herokuapp.com', port: 443, secure: true, debug: 3});
   //var peer = new Peer([''], {key: '9zqr9jbhn0mmfgvi', debug: 3});
 
-  var peer = new Peer('<%= my_id %>', {host: 'meette.me', port: 7000, path: '/api',secure: true,turn: true, config: { 'iceServers': [
+  /*
+  var peer = new Peer(, {host: 'meette.me', port: 7000, path: '/api',secure: true, config: { 'iceServers': [
+    {'url': 'turn:homeo@turn.bistri.com:80', credential: 'homeo' },
     {'url':'stun:stun.ekiga.net'},
     {'url':'stun:stun.ideasip.com'},
     {'url':'stun:stun.schlund.de'},
@@ -43,6 +45,9 @@
       username: 'webrtc@live.com'
     }
   ] } , debug: 3});
+  */
+
+  var peer = new Peer(['<%= my_id %>'],{host: 'meette.me', port: 7000, path: '/api',secure: true,turn: true, debug: 3});
 
   var dest_peer_id = '<%= destinated_id %>';
   var call_answer;
