@@ -261,6 +261,7 @@ function drawSomething(conn){
   $('#want_to_play').button('reset');
   $("#want_to_play").prop("disable",false);
 
+  conn.send({clear_draw: true});
 
   var my_draw_topic;
   var peers_draw_topic = " ";
@@ -305,12 +306,13 @@ function drawSomething(conn){
       //context = 0;
       //peersContext = 0;
       gameStop = true;
+
       conn.send({game_answer: my_draw_topic});
       $('#my_guess').show();
       $('#draw_answer_submit').show();
 
 
-  },61000);
+  },8000);
 
   //if answer has been submit
   $('#draw_answer_submit').off().click(function () {
@@ -389,27 +391,27 @@ function drawSomething(conn){
   var curColor = colorPurple;
   var clickColor = new Array();
 
-  $('#Purple_color').off().click(function () {
+  $('#Purple_color').click(function () {
     curColor = colorPurple;
   });
 
-  $('#Green_color').off().click(function () {
+  $('#Green_color').click(function () {
     curColor = colorGreen;
   });
 
-  $('#Yello_color').off().click(function () {
+  $('#Yello_color').click(function () {
     curColor = colorYellow;
   });
 
-  $('#Brown_color').off().click(function () {
+  $('#Brown_color').click(function () {
     curColor = colorBrown;
   });
 
-  $('#eraser').off().click(function () {
+  $('#eraser').click(function () {
     curColor = "white";
   });
 
-  $('#clear_draw').off().click(function () {
+  $('#clear_draw').click(function () {
     clickX.length = 0;
     clickY.length = 0;
     clickDrag.length = 0;
