@@ -293,6 +293,8 @@ function drawSomething(conn){
 
   //after 60secs give destinate the answer to check
   var clear_time = setTimeout(function () {
+      gameStop = true;
+
       window.clearInterval(times);
       $('#left_time').hide();
       time_secs = 60;
@@ -305,14 +307,14 @@ function drawSomething(conn){
 
       //context = 0;
       //peersContext = 0;
-      gameStop = true;
+
 
       conn.send({game_answer: my_draw_topic});
       $('#my_guess').show();
       $('#draw_answer_submit').show();
 
 
-  },8000);
+  },61000);
 
   //if answer has been submit
   $('#draw_answer_submit').off().click(function () {
