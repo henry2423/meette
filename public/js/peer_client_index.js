@@ -1,6 +1,6 @@
-/*
-var peer = new Peer({host: 'meette.me', port: 7000, path: '/api',secure: true,config: { 'iceServers': [
-  { 'url': 'stun:stun.skyway.io:3478' },
+
+var peer = new Peer({host: 'meette.me', port: 7000, path: '/api',secure: true,turn: true, config: { 'iceServers': [
+ // { 'url': 'stun:stun.skyway.io:3478' },
   {'url':'stun:stun01.sipphone.com'},
   {'url':'stun:stun.ekiga.net'},
   {'url':'stun:stun.fwdnet.net'},
@@ -36,8 +36,8 @@ var peer = new Peer({host: 'meette.me', port: 7000, path: '/api',secure: true,co
     username: '28224511:1379330808'
   }
 ] } , debug: 3});
-*/
-var peer = new Peer({key: '2640a314-2f9a-4012-940b-67c418868b0b' ,debug: 3});
+
+//var peer = new Peer({key: '2640a314-2f9a-4012-940b-67c418868b0b' ,debug: 3});
 //choose game
 var game_menu;
 var db_unique_id = " ";
