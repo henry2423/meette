@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e63bd4f8-73ab-4391-bfe9-13e210c140c0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/peer.js" afterPath="$PROJECT_DIR$/public/js/peer.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/peer_client_index.js" afterPath="$PROJECT_DIR$/public/js/peer_client_index.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/games.ejs" afterPath="$PROJECT_DIR$/views/games.ejs" />
@@ -33,12 +32,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="peer_client_index.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="peer_client_index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/js/peer_client_index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
-              <caret line="1" column="88" lean-forward="false" selection-start-line="1" selection-start-column="88" selection-end-line="1" selection-end-column="88" />
-              <folding />
+            <state relative-caret-position="266">
+              <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="77" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -46,14 +47,14 @@
       <file leaf-file-name="games.ejs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/games.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="29" column="106" lean-forward="true" selection-start-line="29" selection-start-column="95" selection-end-line="29" selection-end-column="106" />
+            <state relative-caret-position="361">
+              <caret line="68" column="37" lean-forward="false" selection-start-line="68" selection-start-column="37" selection-end-line="68" selection-end-column="37" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="peer_client_games.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="peer_client_games.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/js/peer_client_games.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="190">
@@ -124,8 +125,8 @@
         <option value="$PROJECT_DIR$/routes/index.js" />
         <option value="$PROJECT_DIR$/views/index.ejs" />
         <option value="$PROJECT_DIR$/public/js/peer.js" />
-        <option value="$PROJECT_DIR$/views/games.ejs" />
         <option value="$PROJECT_DIR$/public/js/peer_client_index.js" />
+        <option value="$PROJECT_DIR$/views/games.ejs" />
       </list>
     </option>
   </component>
@@ -447,12 +448,12 @@
       <workItem from="1483344597991" duration="93000" />
       <workItem from="1483367511893" duration="40580000" />
       <workItem from="1483820563850" duration="52417000" />
-      <workItem from="1484470079489" duration="1989000" />
+      <workItem from="1484470079489" duration="2178000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="132369000" />
+    <option name="totallyTimeSpent" value="132558000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -723,6 +724,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -767,6 +771,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="239">
           <caret line="4" column="32563" lean-forward="false" selection-start-line="4" selection-start-column="32563" selection-end-line="4" selection-end-column="32563" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -847,17 +852,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/games.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="29" column="106" lean-forward="true" selection-start-line="29" selection-start-column="95" selection-end-line="29" selection-end-column="106" />
+        <state relative-caret-position="361">
+          <caret line="68" column="37" lean-forward="false" selection-start-line="68" selection-start-column="37" selection-end-line="68" selection-end-column="37" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/peer.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="699">
-          <caret line="0" column="18866" lean-forward="false" selection-start-line="0" selection-start-column="18866" selection-end-line="0" selection-end-column="18866" />
+        <state relative-caret-position="0">
+          <caret line="0" column="576" lean-forward="true" selection-start-line="0" selection-start-column="576" selection-end-line="0" selection-end-column="576" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/js/peer_client_index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="77" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -865,14 +880,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
           <caret line="10" column="5" lean-forward="false" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/js/peer_client_index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="1" column="88" lean-forward="false" selection-start-line="1" selection-start-column="88" selection-end-line="1" selection-end-column="88" />
           <folding />
         </state>
       </provider>

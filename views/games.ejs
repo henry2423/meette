@@ -27,6 +27,7 @@
 
   //var peer = new Peer([''], {host: 'peerjserver.herokuapp.com', port: 443, secure: true, debug: 3});
   //var peer = new Peer([''], {key: '9zqr9jbhn0mmfgvi', debug: 3});
+  /*
   var peer = new Peer('<%= my_id %>', {host: 'meette.me', port: 7000, path: '/api',secure: true,turn: true, config: { 'iceServers': [
     // { 'url': 'stun:stun.skyway.io:3478' },
     {'url':'stun:stun01.sipphone.com'},
@@ -64,6 +65,8 @@
       username: '28224511:1379330808'
     }
   ] } , debug: 3});
+  */
+  var peer = new Peer('<%= my_id %>',{key: '2640a314-2f9a-4012-940b-67c418868b0b' ,debug: 3});
   var dest_peer_id = '<%= destinated_id %>';
   var call_answer;
   var call_setup = false;
