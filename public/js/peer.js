@@ -1564,7 +1564,7 @@ Socket.prototype.close = function() {
 module.exports = Socket;
 
 },{"./util":8,"eventemitter3":9}],8:[function(require,module,exports){
-var defaultConfig = {'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' , 'url': 'stun:stun.l.google.com:19302'}]};
+var defaultConfig = {'iceServers': [{ 'urls': 'stun:stun.skyway.io:3478' , 'url': 'stun:stun.skyway.io:3478'}]};
 var dataCount = 1;
 
 var BinaryPack = require('js-binarypack');
